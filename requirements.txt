@@ -1,0 +1,15 @@
+djangorestframework==3.8.2
+pillow==5.2.0
+requests==2.20.1
+django==1.11
+psycopg2==2.7.4
+ruamel.yaml==0.15.50
+django-cors-headers==2.4.0
+django_filter==2.0.0
+Celery==4.2.* # TODO Will be used for threads
+redis==2.10.6
+django-debug-toolbar==1.9.1
+scipy==1.0.0
+pandas==0.23.4
+Cython==0.27.3
+auto-sklearn==0.4.2
