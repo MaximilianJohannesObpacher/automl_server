@@ -1,7 +1,7 @@
 djangorestframework==3.8.2
 pillow==5.2.0
 requests==2.20.1
-django==1.11
+django==1.11.15
 psycopg2==2.7.4
 ruamel.yaml==0.15.50
 django-cors-headers==2.4.0

@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from training_server.models import AutoSklearnConfig
 
-# from training_server.automl_systems.autosklearn.run import train as train_auto_sklearn
+from automl_systems.auto_sklearn.run import train as train_auto_sklearn
 # from automl_server.automl_systems.tpot.run import train as train_tpot
 
 
@@ -30,7 +30,7 @@ class AutoSklearnConfigAdmin(admin.ModelAdmin):
         obj.training_triggered = True
         obj.status = 'waiting'
         obj.save()
-        # train_auto_sklearn(obj)
+        train_auto_sklearn(obj)
         super(AutoSklearnConfigAdmin, self).save_model(request, obj, form, change)
 
     def has_add_permission(self, request, obj=None):
