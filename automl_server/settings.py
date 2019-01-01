@@ -71,6 +71,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'automl_server.wsgi.application'
 
 
+CELERY_BROKER_URL = 'redis://redis'
+
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
@@ -84,6 +86,11 @@ DATABASES = {
     }
 }
 
+AUTO_ML_DATA_PATH = BASE_DIR + '/automl_systems/ml_data'
+AUTO_ML_MODELS_PATH = BASE_DIR + '/automl_systems/ml_models'
+SPECTOGRAMS_PATH = BASE_DIR + '/automl_systems/spectograms'
+RECORDINGS_PATH = BASE_DIR + '/automl_systems/recordings'
+RESULTS_PATH = BASE_DIR + '/automl_systems/results'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

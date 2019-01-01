@@ -8,7 +8,18 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
+      - /ml_data
     ports:
       - "8000:8000"
     depends_on:
       - db
+  redis:
+    image: "redis:alpine"
+  celery:
+    build: .
+    command: bash -c "celery -A training_server.celery worker -l DEBUG -E"
+    volumes:
+    - .:/code
+    depends_on:
+    - db
+    - redis
