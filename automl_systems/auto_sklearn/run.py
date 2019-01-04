@@ -1,4 +1,5 @@
 import autosklearn.classification
+import billiard
 import sklearn.datasets
 import sklearn.metrics
 
@@ -12,6 +13,7 @@ import os
 import pandas
 import sys
 import six.moves.cPickle as pickle
+from autosklearn.estimators import AutoSklearnClassifier
 from celery import shared_task
 from sklearn.model_selection import train_test_split
 
@@ -38,13 +40,13 @@ def ingest():
 
 @app.task()
 def train(auto_sklearn_config_id):
+	print('Autosklearnconfig object: ' + str(auto_sklearn_config_id))
 	auto_sklearn_config = AutoSklearnConfig.objects.get(id=auto_sklearn_config_id)
-	print('Autosklearnconfig object: ' + auto_sklearn_config.status)
 
 	auto_sklearn_config.status = 'in_progress'
 	auto_sklearn_config.save()
 	# Storing save location for models
-	print('Autosklearnconfig object2: ' + auto_sklearn_config.status)
+
 	try:
 		dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'auto_sklearn' + str(datetime.datetime.now()) + '.dump')
 
@@ -67,6 +69,7 @@ def train(auto_sklearn_config_id):
 					break
 				i += 1
 
+		print('before training init')
 		model = autosklearn.classification.AutoSklearnClassifier(
 			time_left_for_this_task=auto_sklearn_config.run_time,
 			per_run_time_limit=auto_sklearn_config.per_instance_runtime,
@@ -86,8 +89,9 @@ def train(auto_sklearn_config_id):
 			delete_output_folder_after_terminate=auto_sklearn_config.delete_output_folder_after_terminate,
 			shared_mode=auto_sklearn_config.shared_mode,
 			smac_scenario_args=auto_sklearn_config.smac_scenario_args,
-			logging_config=auto_sklearn_config.logging_config
+			logging_config=auto_sklearn_config.logging_config,
 		)
+		print('before training start')
 		model.fit(d2_npy, labels)
 		print(model.show_models())
 

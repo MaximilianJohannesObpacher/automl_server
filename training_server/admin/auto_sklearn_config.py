@@ -45,9 +45,8 @@ class AutoSklearnConfigAdmin(admin.ModelAdmin):
         obj.training_triggered = True
         obj.status = 'waiting'
         obj.save()
-        # train_auto_sklearn.s(obj.id).apply_async()
-        train_auto_sklearn(obj.id)
-        super(AutoSklearnConfigAdmin, self).save_model(request, obj, form, change)
+        # train_auto_sklearn.s(str(obj.id)).apply_async()
+        train_auto_sklearn(str(obj.id)) # TODO Find out how to make async
 
     def has_add_permission(self, request, obj=None):
         return False

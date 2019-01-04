@@ -1,14 +1,14 @@
 from django.contrib import admin
 
-from training_server.models import AutoSklearnConfig, TpotConfig
-
-#from automl_server.automl_systems.tpot.run import train as train_tpot
+from automl_systems.tpot.run import train
+from training_server.models import TpotConfig
 
 
 class TpotConfigAdmin(admin.ModelAdmin):
+    list_display = ('status', 'date_trained', 'model_path', 'additional_remarks')
 
     fieldsets = (
-        ('General Info:', {'fields': ('framework', 'status', 'date_trained', 'model_path')}),
+        ('General Info:', {'fields': ('framework', 'status', 'date_trained', 'model_path', 'additional_remarks')}),
         ('Resource Options:', {'fields': ('n_jobs', 'max_time_mins', 'max_eval_time_mins',)}),
         ('Model Training Options:', {'fields': (
         'generations', 'population_size', 'offspring_size', 'mutation_rate', 'crossover_rate', 'subsample', 'random_state', 'config_dict', 'warm_start', 'use_dask', 'early_stop', 'verbosity')}),
@@ -29,9 +29,8 @@ class TpotConfigAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         obj.training_triggered = True
-        #train_tpot(obj)
+        train(obj)
         obj.status = ('in_progress')
-        super(TpotConfigAdmin, self).save_model(request, obj, form, change)
 
     def has_add_permission(self, request, obj=None):
         return False
