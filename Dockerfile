@@ -12,3 +12,6 @@ RUN pip3 install -U numpy==1.14.5
 RUN pip3 install -U Cython
 RUN pip3 install -r requirements.txt
 ADD . /code/
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh

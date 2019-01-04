@@ -12,6 +12,7 @@ import os
 import pandas
 import sys
 import six.moves.cPickle as pickle
+from celery import shared_task
 from sklearn.model_selection import train_test_split
 
 from training_server.celery import app
@@ -38,10 +39,12 @@ def ingest():
 @app.task()
 def train(auto_sklearn_config_id):
 	auto_sklearn_config = AutoSklearnConfig.objects.get(id=auto_sklearn_config_id)
+	print('Autosklearnconfig object: ' + auto_sklearn_config.status)
 
 	auto_sklearn_config.status = 'in_progress'
 	auto_sklearn_config.save()
 	# Storing save location for models
+	print('Autosklearnconfig object2: ' + auto_sklearn_config.status)
 	try:
 		dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'auto_sklearn' + str(datetime.datetime.now()) + '.dump')
 
@@ -100,6 +103,7 @@ def train(auto_sklearn_config_id):
 		auto_sklearn_config.status = 'success'
 		auto_sklearn_config.model_path = dump_file
 		auto_sklearn_config.save()
+		print('Status final ' +auto_sklearn_config.status)
 
 	except Exception as e:
 		auto_sklearn_config.status = 'fail'

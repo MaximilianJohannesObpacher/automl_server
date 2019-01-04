@@ -237,13 +237,6 @@ class AutoSklearnConfig(AlgorithmConfig):
     # missing get_smac_object_callback - to advanced
     logging_config = models.CharField(null=True, blank=True, max_length=1024, help_text='dictionary object specifying the logger configuration. If None, the default logging.yaml file is used, which can be found in the directory util/logging.yaml relative to the installation.')
 
-    #def save(self, *args, **kwargs):
-    #    #(train.s()).apply_async()
-    #    (train_tpot.s()).apply_async()
-    #    # train_tpot()
-    #    return super(AlgorithmConfig, self).save(*args, **kwargs)
-
-    # TODO Allow passing args into ml algorithms
     # TODO Disable Save if training already triggered
     # TODO Enable API-Endpoints
     # TODO Add prediction and prediction result models and endpoints
