@@ -48,7 +48,7 @@ def train(tpot_config):
 
         # training the models
         print('about to train')
-        model = TPOTClassifier(verbosity=2, max_time_mins=480, max_eval_time_mins=20, config_dict='TPOT light')
+        model = TPOTClassifier(verbosity=2, max_time_mins=480, max_eval_time_mins=15, config_dict='TPOT light')
         #    generations=tpot_config.generations,
         #    population_size=tpot_config.population_size,
         #    offspring_size=tpot_config.offspring_size,
