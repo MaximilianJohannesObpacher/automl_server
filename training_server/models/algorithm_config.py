@@ -8,11 +8,12 @@ from django.db import models
 
 class AlgorithmConfig(models.Model):
 
-
+    AUTO_KERAS = 'auto_keras'
     AUTO_SKLEARN = 'auto_sklearn'
     TPOT = 'tpot'
 
     ALGORITHM_CHOICES = (
+        (AUTO_KERAS, 'Auto-keras'),
         (AUTO_SKLEARN, 'Auto-sklearn'),
         (TPOT, 'TPOT'),
     )
@@ -35,8 +36,9 @@ class AlgorithmConfig(models.Model):
     date_trained = models.DateTimeField(auto_now=True)
     training_triggered = models.BooleanField(default=False, help_text='Helper Flag for defining which config should be updateable (which one has not yet been trained)')
     additional_remarks = models.CharField(null=True, blank=True, max_length=2048, help_text='Additional Information about the training. E.g. Information about failed trainings are logged here in case a training fails!')
-    # input_data_filename = models.Charfield(default='merged_folds')
-    # TODO Exclude this flag in the admin. Define making all fields readonly depending on that flag.
+    input_data_filename = models.CharField(blank=False, default='merged_folds_training_x.npy', max_length=256, help_text='Filename or path to the input data file originating from ml_data folder')
+    labels_filename = models.CharField(blank=False, default='merged_folds_training_y.npy', max_length=256, help_text='Filename or path to the input data file originating from ml_data folder')
+    training_time = models.CharField(blank=True, null=True, max_length=128, help_text='training time until completion or interrupt')
 
     #def save(self, *args, **kwargs):
     #    #(train.s()).apply_async()

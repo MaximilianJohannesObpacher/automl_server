@@ -9,11 +9,14 @@ django_filter==2.0.0
 Celery==4.2.* # TODO Will be used for threads
 redis==2.10.6
 django-debug-toolbar==1.9.1
-scipy==1.0.0
+scipy==1.1.0
 pandas==0.23.4
 Cython==0.27.3
+setuptools==39.1.0
+scikit-learn==0.20.1
+tqdm==4.25.0
 auto-sklearn==0.4.2
 tpot==0.9.5
 billiard==3.5.0.4 # Subprocesses for celery
 ptvsd==3.0.0  # Debugging
-
+autokeras==0.3.5

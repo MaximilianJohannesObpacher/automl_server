@@ -25,14 +25,14 @@ class AutoSklearnConfigAdmin(admin.ModelAdmin):
     list_display = ('status', 'date_trained', 'model_path', 'additional_remarks')
 
     fieldsets = (
-        ('General Info:', {'fields':('framework', 'status', 'date_trained', 'model_path', 'logging_config', 'additional_remarks')}),
+        ('General Info:', {'fields':('framework', 'status', 'date_trained', 'model_path', 'logging_config', 'additional_remarks', 'training_time')}),
         ('Resource Options:', {'fields': ('run_time', 'per_instance_runtime', 'memory_limit')}),
         ('Model Training Options:', {'fields': ('initial_configurations_via_metalearning', 'ensemble_size', 'ensemble_nbest', 'seed', 'include_estimators', 'exclude_estimators', 'include_preprocessors', 'exclude_preprocessors', 'resampling_strategy', 'shared_mode')}),
-        ('Caching and storage:', {'fields': ('output_folder', 'delete_output_folder_after_terminate', 'tmp_folder', 'delete_tmp_folder_after_terminate', 'additional_remarks')})
+        ('Caching and storage:', {'fields': ('input_data_filename', 'labels_filename', 'output_folder', 'delete_output_folder_after_terminate', 'tmp_folder', 'delete_tmp_folder_after_terminate', 'additional_remarks')})
     )
 
     def get_readonly_fields(self, request, obj=None):
-        readonly_fields = ['status', 'model_path', 'date_trained', 'logging_config', 'additional_remarks']
+        readonly_fields = ['status', 'model_path', 'date_trained', 'logging_config', 'additional_remarks', 'training_time']
         if obj:
             if not 'framework' in readonly_fields:
                 readonly_fields.append('framework')

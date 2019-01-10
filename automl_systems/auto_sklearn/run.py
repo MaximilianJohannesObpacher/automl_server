@@ -1,3 +1,6 @@
+import multiprocessing
+import time
+
 import autosklearn.classification
 import billiard
 import sklearn.datasets
@@ -17,6 +20,7 @@ from autosklearn.estimators import AutoSklearnClassifier
 from celery import shared_task
 from sklearn.model_selection import train_test_split
 
+from automl_systems.shared import load_training_data
 from training_server.celery import app
 from automl_server.settings import AUTO_ML_MODELS_PATH, AUTO_ML_DATA_PATH
 from training_server.models import AutoSklearnConfig
@@ -48,26 +52,10 @@ def train(auto_sklearn_config_id):
 	# Storing save location for models
 
 	try:
+
 		dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'auto_sklearn' + str(datetime.datetime.now()) + '.dump')
 
-		# TODO load klaidis proposed numpy arrays
-		x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, 'merged_folds_training_x.npy')) # size might crash it.
-		y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, 'merged_folds_training_y.npy'))
-
-
-		nsamples = len(x)
-		d2_npy = x.reshape((nsamples, -1))
-
-		# replacing one_hot_encoding with letters for each category.
-		labels = []
-		labels_replace = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
-		for label in y:
-			i = 0
-			while i < 10:
-				if label[i] == 1:
-					labels.append(labels_replace[i])
-					break
-				i += 1
+		x, y = load_training_data(auto_sklearn_config.input_data_filename, auto_sklearn_config.labels_filename, True)
 
 		print('before training init')
 		model = autosklearn.classification.AutoSklearnClassifier(
@@ -92,7 +80,9 @@ def train(auto_sklearn_config_id):
 			logging_config=auto_sklearn_config.logging_config,
 		)
 		print('before training start')
-		model.fit(d2_npy, labels)
+		start = time.time()
+		model.fit(x, y)
+		end = time.time()
 		print(model.show_models())
 
 		x = model.show_models()
@@ -103,13 +93,18 @@ def train(auto_sklearn_config_id):
 		with open(dump_file, 'wb') as f:
 			pickle.dump(results, f)
 
-		print('writing config status')
+		auto_sklearn_config.training_time = round(end-start, 2)
 		auto_sklearn_config.status = 'success'
 		auto_sklearn_config.model_path = dump_file
 		auto_sklearn_config.save()
 		print('Status final ' +auto_sklearn_config.status)
 
 	except Exception as e:
+		end = time.time()
+		if 'start' in locals():
+			print('failed after:' + str(end-start))
+			auto_sklearn_config.training_time = round(end-start, 2)
+
 		auto_sklearn_config.status = 'fail'
 		auto_sklearn_config.additional_remarks = e
 		auto_sklearn_config.save()

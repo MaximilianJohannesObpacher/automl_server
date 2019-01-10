@@ -1,13 +1,13 @@
 from django.contrib import admin
 from django.http import HttpResponseRedirect
 
-from training_server.models import AlgorithmConfig, AutoSklearnConfig, TpotConfig
+from training_server.models import AlgorithmConfig, AutoSklearnConfig, TpotConfig, AutoKerasConfig
 
 
 class AlgorithmConfigAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
-        return ('status', 'model_path', 'date_trained', 'training_triggered', 'additional_remarks')
+        return ('status', 'model_path', 'date_trained', 'training_triggered', 'additional_remarks', 'training_time')
 
     def save_model(self, request, obj, form, change):
         pass # Not saving the basemodel algorithmconfig, but instead the model autosklearn_config or tpot_config in the response add method
@@ -22,6 +22,15 @@ class AlgorithmConfigAdmin(admin.ModelAdmin):
                 date_trained=obj.date_trained
             )
             redirect_path = '/admin/training_server/autosklearnconfig/' + str(auto_sklearn_config.id) + '/change/'
+
+        elif obj.framework == 'auto_keras':
+            auto_keras_config = AutoKerasConfig.objects.create(
+                framework=obj.framework,
+                model_path=obj.model_path,
+                status=obj.status,
+                date_trained=obj.date_trained
+            )
+            redirect_path = '/admin/training_server/autokerasconfig/' + str(auto_keras_config.id) + '/change/'
         else:
             tpot_config = TpotConfig.objects.create(
                 framework=obj.framework,
