@@ -10,10 +10,11 @@ RUN apt-get update
 RUN apt-get install -y swig
 RUN apt-get install -y wget
 
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 RUN pip install numpy==1.14.5
 RUN pip install Cython
 RUN pip install -r requirements.txt
-ADD . /code/
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+ADD . /code/

@@ -10,8 +10,9 @@ class AutoKerasConfigAdmin(admin.ModelAdmin):
     list_display = ('status', 'date_trained', 'model_path', 'additional_remarks')
 
     fieldsets = (
-        ('General Info:', {'fields':('framework', 'status', 'date_trained', 'model_path', 'additional_remarks', 'training_time')}),
-        ('Resource Options:', {'fields': ('time_limit',)})
+        ('General Info:', {'fields':('framework', 'status', 'date_trained', 'model_path', 'additional_remarks', 'training_time', 'verbose')}),
+        ('Resource Options:', {'fields': ('time_limit',)}),
+        ('Caching and storage:', {'fields': ('input_data_filename', 'labels_filename')})
     )
 
     def get_readonly_fields(self, request, obj=None):
