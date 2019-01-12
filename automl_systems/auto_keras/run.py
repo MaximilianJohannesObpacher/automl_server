@@ -14,7 +14,7 @@ from training_server.models.auto_keras_config import AutoKerasConfig
 
 @app.task()
 def train(auto_keras_config_id):
-	print('auto_keras_config_object: ' + str(auto_keras_config_id))
+	print('auto_keras_config object: ' + str(auto_keras_config_id))
 	auto_keras_config = AutoKerasConfig.objects.get(id=auto_keras_config_id)
 
 	auto_keras_config.status = 'in_progress'
@@ -22,7 +22,7 @@ def train(auto_keras_config_id):
 	# Storing save location for models
 
 	try:
-		dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'auto_keras' + str(datetime.datetime.now()) + '.dump')
+		dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'auto_keras' + str(datetime.datetime.now()) + '.h5')
 
 		x, y = load_training_data(auto_keras_config.input_data_filename, auto_keras_config.labels_filename, False)
 
@@ -37,15 +37,11 @@ def train(auto_keras_config_id):
 
 		print("Fitting Success!!!")
 
-		print(dump_file)
 		# storing the best performer
-		clf.export_autokeras_model('auto_keras_v1.h5')
-		print('after export')
-
-		from keras.models import load_model
-		from keras.utils import plot_model
-		plot_model(clf, to_file='my_model.png')
-
+		with open(dump_file, 'wb') as f:
+			clf.export_autokeras_model(f)
+		print('saved!')
+#
 		auto_keras_config.training_time = round(end-start, 2)
 		auto_keras_config.status = 'success'
 		auto_keras_config.model_path = dump_file
