@@ -9,10 +9,20 @@ run with
 docker-compose up --build
 '''
 
+Entrypoint for testing is 0.0.0.0:8003/admin/
+
+The user is always defined in the entrypoint script.
+By default a user with username: admin and password test1234 is created for you to test
+
+===
+TODO: Celery
+
 '''
 celery -A training_server.celery worker -l DEBUG -E
 '''
 Install the redis server to run redis locally:
+===
+
 
 brew install redis
 
