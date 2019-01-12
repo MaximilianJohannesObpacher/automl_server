@@ -25,22 +25,6 @@ from training_server.celery import app
 from automl_server.settings import AUTO_ML_MODELS_PATH, AUTO_ML_DATA_PATH
 from training_server.models import AutoSklearnConfig
 
-target_name = 'jordan'
-
-
-def ingest():
-	training_data = pandas.read_csv(os.path.join(AUTO_ML_DATA_PATH,
-	                                             'numerai_training_data.csv'), header=0)
-	tournament_data = pandas.read_csv(os.path.join(AUTO_ML_DATA_PATH,
-	                                               'numerai_tournament_data.csv'), header=0)
-	features = [f for f in list(training_data) if 'feature' in f]
-	x = training_data[features]
-	y = training_data['target_' + target_name]
-	x_tournament = tournament_data[features]
-	ids = tournament_data['id']
-	return (x, y, x_tournament, ids)
-
-	# be careful to persist the data and how they were split for training, so we do not validate on training data
 
 @app.task()
 def train(auto_sklearn_config_id):
@@ -55,6 +39,7 @@ def train(auto_sklearn_config_id):
 
 		dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'auto_sklearn' + str(datetime.datetime.now()) + '.dump')
 
+		print('about to load')
 		x, y = load_training_data(auto_sklearn_config.input_data_filename, auto_sklearn_config.labels_filename, True)
 
 		print('before training init')
@@ -108,23 +93,3 @@ def train(auto_sklearn_config_id):
 		auto_sklearn_config.status = 'fail'
 		auto_sklearn_config.additional_remarks = e
 		auto_sklearn_config.save()
-
-
-def predict(model, x_tournament, ids):
-	eps = sys.float_info.epsilon
-	y_prediction = model.predict_proba(x_tournament)
-	results = numpy.clip(y_prediction[:, 1], 0.0 + eps, 1.0 - eps)
-	results_df = pandas.DataFrame(data={'probability_' + target_name: results})
-	joined = pandas.DataFrame(ids).join(results_df)
-	joined.to_csv(os.path.join(AUTO_ML_DATA_PATH,
-	                           'prediction_' + target_name + '.csv'), index=False, float_format='%.16f')
-
-
-def main():
-	x, y, x_tournament, ids = ingest()
-	model = train(x, y)
-	predict(model, x_tournament.copy(), ids)
-
-
-if __name__ == '__main__':
-	main()
