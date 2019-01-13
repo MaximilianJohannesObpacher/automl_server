@@ -13,7 +13,7 @@ import random
 
 from tpot import TPOTClassifier
 
-from automl_systems.shared import load_training_data
+from automl_systems.shared import load_ml_data
 from training_server.celery import app
 from automl_server.settings import AUTO_ML_DATA_PATH, AUTO_ML_MODELS_PATH
 
@@ -32,8 +32,7 @@ def train(tpot_config):
         # Storing save location for models
         dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'tpot_' + str(datetime.datetime.now()) + '.dump')
 
-        x, y = load_training_data(tpot_config.input_data_filename, tpot_config.labels_filename, True)
-
+        x, y = load_ml_data(tpot_config.training_data_filename, tpot_config.training_labels_filename, True, tpot_config.make_one_hot_encoding_task_binary)
         # training the models
         print('about to train')
         model = TPOTClassifier( #verbosity=2, max_time_mins=90, max_eval_time_mins=5, config_dict='TPOT light', population_size=4, generations=3, n_jobs=1)
