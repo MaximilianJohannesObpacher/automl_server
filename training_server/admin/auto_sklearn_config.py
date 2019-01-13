@@ -25,10 +25,11 @@ class AutoSklearnConfigAdmin(admin.ModelAdmin):
     list_display = ('status', 'date_trained', 'model_path', 'additional_remarks')
 
     fieldsets = (
-        ('General Info:', {'fields':('framework', 'status', 'date_trained', 'model_path', 'logging_config', 'additional_remarks', 'training_time')}),
+        ('General Info:', {'fields':('training_name','framework', 'status', 'date_trained', 'model_path', 'logging_config', 'additional_remarks', 'training_time')}),
         ('Resource Options:', {'fields': ('run_time', 'per_instance_runtime', 'memory_limit')}),
         ('Model Training Options:', {'fields': ('initial_configurations_via_metalearning', 'ensemble_size', 'ensemble_nbest', 'seed', 'include_estimators', 'exclude_estimators', 'include_preprocessors', 'exclude_preprocessors', 'resampling_strategy', 'shared_mode')}),
-        ('Caching and storage:', {'fields': ('input_data_filename', 'labels_filename', 'output_folder', 'delete_output_folder_after_terminate', 'tmp_folder', 'delete_tmp_folder_after_terminate', 'additional_remarks')})
+        ('Preprocessing:', {'fields': ('make_one_hot_encoding_task_binary', 'handle_one_hot_encoding')}),
+        ('Caching and storage:', {'fields': ('training_data_filename', 'training_labels_filename','validation_data_filename', 'validation_labels_filename', 'output_folder', 'delete_output_folder_after_terminate', 'tmp_folder', 'delete_tmp_folder_after_terminate', 'additional_remarks')})
     )
 
     def get_readonly_fields(self, request, obj=None):

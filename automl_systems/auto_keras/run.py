@@ -8,7 +8,7 @@ import numpy
 from autokeras import ImageClassifier
 
 from automl_server.settings import AUTO_ML_MODELS_PATH, AUTO_ML_DATA_PATH
-from automl_systems.shared import load_training_data
+from automl_systems.shared import load_ml_data
 from training_server.celery import app
 from training_server.models.auto_keras_config import AutoKerasConfig
 
@@ -24,7 +24,7 @@ def train(auto_keras_config_id):
 	try:
 		dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'auto_keras' + str(datetime.datetime.now()) + '.h5')
 
-		x, y = load_training_data(auto_keras_config.input_data_filename, auto_keras_config.labels_filename, False)
+		x, y = load_ml_data(auto_keras_config.training_data_filename, auto_keras_config.training_labels_filename, False, auto_keras_config.make_one_hot_encoding_task_binary)
 
 		clf = ImageClassifier(verbose=auto_keras_config.verbose)
 

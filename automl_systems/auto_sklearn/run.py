@@ -20,10 +20,11 @@ from autosklearn.estimators import AutoSklearnClassifier
 from celery import shared_task
 from sklearn.model_selection import train_test_split
 
-from automl_systems.shared import load_training_data
+from automl_systems.shared import load_ml_data
 from training_server.celery import app
 from automl_server.settings import AUTO_ML_MODELS_PATH, AUTO_ML_DATA_PATH
 from training_server.models import AutoSklearnConfig
+from training_server.models.validation_result import ValidationResult
 
 
 @app.task()
@@ -40,7 +41,7 @@ def train(auto_sklearn_config_id):
 		dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'auto_sklearn' + str(datetime.datetime.now()) + '.dump')
 
 		print('about to load')
-		x, y = load_training_data(auto_sklearn_config.input_data_filename, auto_sklearn_config.labels_filename, True)
+		x, y = load_ml_data(auto_sklearn_config.training_data_filename, auto_sklearn_config.training_labels_filename, True, auto_sklearn_config.make_one_hot_encoding_task_binary)
 
 		print('before training init')
 		model = autosklearn.classification.AutoSklearnClassifier(
@@ -70,13 +71,9 @@ def train(auto_sklearn_config_id):
 		end = time.time()
 		print(model.show_models())
 
-		x = model.show_models()
-		results = {"ensemble": x}
-
-		print('pickling')
 		# storing the best performer
 		with open(dump_file, 'wb') as f:
-			pickle.dump(results, f)
+			pickle.dump(model, f)
 
 		auto_sklearn_config.training_time = round(end-start, 2)
 		auto_sklearn_config.status = 'success'
