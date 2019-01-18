@@ -17,6 +17,7 @@ def predict(conf):
 			x, y = load_ml_data(conf.model.validation_data_filename, conf.model.validation_labels_filename, True, conf.model.make_one_hot_encoding_task_binary)
 		elif conf.model.framework == 'auto_keras':
 			my_model = pickle_from_file(conf.model.model_path)
+			x, y = load_ml_data(conf.model.validation_data_filename, conf.model.validation_labels_filename, False, conf.model.make_one_hot_encoding_task_binary)
 		else:
 			print('notimpl (epic fail)')
 

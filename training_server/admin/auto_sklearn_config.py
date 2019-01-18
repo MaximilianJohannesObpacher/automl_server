@@ -31,6 +31,7 @@ class AutoSklearnConfigAdmin(admin.ModelAdmin):
         ('Preprocessing:', {'fields': ('make_one_hot_encoding_task_binary', 'handle_one_hot_encoding')}),
         ('Caching and storage:', {'fields': ('training_data_filename', 'training_labels_filename','validation_data_filename', 'validation_labels_filename', 'output_folder', 'delete_output_folder_after_terminate', 'tmp_folder', 'delete_tmp_folder_after_terminate', 'additional_remarks')})
     )
+    list_filter = ('status',)
 
     def get_readonly_fields(self, request, obj=None):
         readonly_fields = ['status', 'model_path', 'date_trained', 'logging_config', 'additional_remarks', 'training_time']

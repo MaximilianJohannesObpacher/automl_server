@@ -38,8 +38,7 @@ def train(auto_keras_config_id):
 		print("Fitting Success!!!")
 
 		# storing the best performer
-		with open(dump_file, 'wb') as f:
-			clf.export_autokeras_model(f)
+		clf.export_autokeras_model(dump_file)
 		print('saved!')
 #
 		auto_keras_config.training_time = round(end-start, 2)

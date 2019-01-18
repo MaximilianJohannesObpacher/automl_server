@@ -17,9 +17,11 @@ class TpotConfigAdmin(admin.ModelAdmin):
         ('Caching and storage:', {'fields': (
         'training_data_filename', 'training_labels_filename','validation_data_filename', 'validation_labels_filename', 'memory',)})
     )
+    list_filter = ('status',)
 
+    # TODO Maybe a mixin would be a elegant solution for this.
     def get_readonly_fields(self, request, obj=None):
-        readonly_fields = ['status', 'model_path', 'date_trained', 'additional_remarks']
+        readonly_fields = ['status', 'model_path', 'date_trained', 'additional_remarks', 'training_time']
         if obj:
             if not 'framework' in readonly_fields:
                 readonly_fields.append('framework')

@@ -3,6 +3,7 @@ from __future__ import print_function
 from __future__ import division
 
 import datetime
+import math
 import multiprocessing
 import time
 
@@ -45,7 +46,7 @@ def train(tpot_config):
             cv=tpot_config.cv,
             subsample=tpot_config.subsample,
             n_jobs=tpot_config.n_jobs,
-            max_time_mins=tpot_config.max_time_mins,
+            max_time_mins=tpot_config.max_time_mins, # Tpot takes input in mins while most other frameworks take inputs in seconds.
             max_eval_time_mins=tpot_config.max_eval_time_mins,
             random_state=tpot_config.random_state,
             config_dict=tpot_config.config_dict,
