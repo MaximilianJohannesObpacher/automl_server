@@ -87,7 +87,7 @@ def load_from_folder(features_path, labels_path):
 	return files[0], files[1]
 
 
-def csv_loader(features_name, labels_name):
+def file_loader(features_name, labels_name):
 
 	features_path, labels_path = get_file_path(features_name, labels_name)
 

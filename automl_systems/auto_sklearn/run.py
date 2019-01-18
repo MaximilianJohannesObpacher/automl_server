@@ -21,7 +21,7 @@ from autosklearn.regression import AutoSklearnRegressor
 from celery import shared_task
 from sklearn.model_selection import train_test_split
 
-from automl_systems.shared import load_ml_data, csv_loader
+from automl_systems.shared import load_ml_data, file_loader
 from training_server.celery import app
 from automl_server.settings import AUTO_ML_MODELS_PATH, AUTO_ML_DATA_PATH
 from training_server.models import AutoSklearnConfig
@@ -99,7 +99,7 @@ def train(auto_sklearn_config_id):
 def train_regression():
 	dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'auto_sklearn_regressor' + str(datetime.datetime.now()) + '.dump')
 
-	features, outcome_slave , _ = csv_loader('c99temp_train.snappy.csv')
+	features, outcome_slave , _ = file_loader('c99temp_train.snappy.csv')
 
 	features = features.values
 	outcome_slave = outcome_slave['tempBoardSLAVE'].values
