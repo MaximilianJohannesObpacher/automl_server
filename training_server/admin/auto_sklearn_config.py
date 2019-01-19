@@ -5,22 +5,6 @@ from training_server.models import AutoSklearnConfig
 from automl_systems.auto_sklearn.run import train as train_auto_sklearn
 
 
-import autosklearn.classification
-import sklearn.model_selection
-import sklearn.datasets
-import sklearn.metrics
-
-def train():
-    X, y = sklearn.datasets.load_digits(return_X_y=True)
-    print('About to go down!')
-    X_train, X_test, y_train, y_test = \
-        sklearn.model_selection.train_test_split(X, y, random_state=1)
-    automl = autosklearn.classification.AutoSklearnClassifier(time_left_for_this_task=300, per_run_time_limit=30, ml_memory_limit=8192)
-    automl.fit(X_train, y_train)
-    y_hat = automl.predict(X_test)
-    print("Accuracy score", sklearn.metrics.accuracy_score(y_test, y_hat))
-
-
 class AutoSklearnConfigAdmin(admin.ModelAdmin):
     list_display = ('status', 'date_trained', 'model_path', 'additional_remarks')
 
@@ -28,7 +12,7 @@ class AutoSklearnConfigAdmin(admin.ModelAdmin):
         ('General Info:', {'fields':('training_name','framework', 'status', 'date_trained', 'model_path', 'logging_config', 'additional_remarks', 'training_time')}),
         ('Resource Options:', {'fields': ('run_time', 'per_instance_runtime', 'memory_limit')}),
         ('Model Training Options:', {'fields': ('initial_configurations_via_metalearning', 'ensemble_size', 'ensemble_nbest', 'seed', 'include_estimators', 'exclude_estimators', 'include_preprocessors', 'exclude_preprocessors', 'resampling_strategy', 'shared_mode')}),
-        ('Preprocessing:', {'fields': ('make_one_hot_encoding_task_binary', 'handle_one_hot_encoding')}),
+        ('Preprocessing:', {'fields': ('make_one_hot_encoding_task_binary',)}),
         ('Caching and storage:', {'fields': ('training_data_filename', 'training_labels_filename','validation_data_filename', 'validation_labels_filename', 'output_folder', 'delete_output_folder_after_terminate', 'tmp_folder', 'delete_tmp_folder_after_terminate', 'additional_remarks')})
     )
     list_filter = ('status',)

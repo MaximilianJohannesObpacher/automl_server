@@ -13,7 +13,7 @@ class TpotConfigAdmin(admin.ModelAdmin):
         ('Model Training Options:', {'fields': (
         'generations', 'population_size', 'offspring_size', 'mutation_rate', 'crossover_rate', 'subsample', 'random_state', 'config_dict', 'warm_start', 'use_dask', 'early_stop', 'verbosity')}),
         ('Evaluation', {'fields': ('scoring', 'cv', )}),
-        ('Preprocessing:', {'fields': ('make_one_hot_encoding_task_binary', 'handle_one_hot_encoding')}),
+        ('Preprocessing:', {'fields': ('make_one_hot_encoding_task_binary', 'input_one_hot_encoded')}),
         ('Caching and storage:', {'fields': (
         'training_data_filename', 'training_labels_filename','validation_data_filename', 'validation_labels_filename', 'memory',)})
     )

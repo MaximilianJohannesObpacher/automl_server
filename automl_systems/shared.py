@@ -1,4 +1,6 @@
+import glob
 import os
+from shutil import copyfile
 
 import numpy
 import pandas as pd
@@ -6,15 +8,18 @@ import pandas as pd
 from automl_server.settings import AUTO_ML_DATA_PATH
 
 
-def load_ml_data(data_filename, labels_filename, reformat_required, transform_to_binary):
-	x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, data_filename))  # size might crash it.
+def load_ml_data(data_filename, labels_filename, one_hot_encoded, transform_to_binary):
+	x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, data_filename))
 	y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, labels_filename))
 	print('loaded')
 
-	if reformat_required:
+	if one_hot_encoded:
+		print('reformat!')
 		return reformat_data(x), make_one_hot_encoding_binary(y) if transform_to_binary else make_one_hot_encoding_categorical(y)
 	else:
-		return x, make_one_hot_encoding_binary(y) if transform_to_binary else make_one_hot_encoding_categorical(y)
+		print('x,y')
+		return x, y
+		# TODO how to handel for keras: return x, make_one_hot_encoding_binary(y) if transform_to_binary else make_one_hot_encoding_categorical(y)
 
 
 def reformat_data(x):
@@ -23,6 +28,21 @@ def reformat_data(x):
 	d2_npy = x.reshape((nsamples, -1))
 	print(str(len(d2_npy)))
 	return d2_npy
+
+
+def make_categorical_binary(labels, true_name):
+	bin_labels = []
+
+	for label in labels:
+		print(label)
+		if label==true_name:
+			bin_labels.append(1)
+		else:
+			bin_labels.append(0)
+
+	return bin_labels
+
+
 
 def make_one_hot_encoding_categorical(y):
 	# replacing one_hot_encoding with letters for each category.
@@ -41,7 +61,6 @@ def make_one_hot_encoding_categorical(y):
 def make_one_hot_encoding_binary(y):
 	labels = []
 	# Assuming state correct comes in first
-	labels_replace = [0, 1]
 	for label in y:
 		i = 0
 		if label[0] == 1:

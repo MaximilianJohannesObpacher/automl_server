@@ -50,7 +50,7 @@ class AlgorithmConfig(models.Model):
 	                                              help_text='Filename or path to the validation labels file originating from ml_data folder')
 	training_time = models.CharField(blank=True, null=True, max_length=128,
 	                                 help_text='training time until completion or interrupt (in seconds)')
-	handle_one_hot_encoding = models.BooleanField(default=True, help_text='Handle one hot encoding by labeling the data with string instead to be accepted.')
+	input_one_hot_encoded = models.BooleanField(default=False, help_text='Handle one hot encoding by labeling the data with string instead to be accepted.')
 	make_one_hot_encoding_task_binary = models.BooleanField(default=False, help_text='Only possible for categorical data with one-hot-encoding. If the flag is checked, the first option is assumed to be option 0 and all options afterwards are assuemd to be option 1')
 
 	def __str__(self):
