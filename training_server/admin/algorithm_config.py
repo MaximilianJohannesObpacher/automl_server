@@ -27,7 +27,7 @@ class AlgorithmConfigAdmin(admin.ModelAdmin):
             'validation_data_filename':obj.validation_data_filename,
             'validation_labels_filename':obj.validation_labels_filename,
             'training_time':obj.training_time,
-            'handle_one_hot_encoding':obj.handle_one_hot_encoding,
+            'input_one_hot_encoded':obj.input_one_hot_encoded,
             'make_one_hot_encoding_task_binary':obj.make_one_hot_encoding_task_binary
     }
 
