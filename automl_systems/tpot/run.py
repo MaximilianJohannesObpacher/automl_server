@@ -33,7 +33,9 @@ def train(tpot_config):
         # Storing save location for models
         dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'tpot_' + str(datetime.datetime.now()) + '.dump')
 
-        x, y = load_ml_data(tpot_config.training_data_filename, tpot_config.training_labels_filename, tpot_config.input_one_hot_encoded, tpot_config.make_one_hot_encoding_task_binary)
+        x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, tpot_config.training_data_filename))
+        y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, tpot_config.training_labels_filename))
+
         # training the models
         print('about to train')
         model = TPOTClassifier( #verbosity=2, max_time_mins=90, max_eval_time_mins=5, config_dict='TPOT light', population_size=4, generations=3, n_jobs=1)

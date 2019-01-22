@@ -30,20 +30,6 @@ def reformat_data(x):
 	return d2_npy
 
 
-def make_categorical_binary(labels, true_name):
-	bin_labels = []
-
-	for label in labels:
-		print(label)
-		if label==true_name:
-			bin_labels.append(1)
-		else:
-			bin_labels.append(0)
-
-	return bin_labels
-
-
-
 def make_one_hot_encoding_categorical(y):
 	# replacing one_hot_encoding with letters for each category.
 	labels = []
