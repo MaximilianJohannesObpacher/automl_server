@@ -13,7 +13,7 @@ class AudioPreprocessorAdmin(admin.ModelAdmin):
 
 
     def save_model(self, request, obj, form, change):
-        obj = transform_all_audio_files_to_npy(obj) # TODO Find out how to make async
+        obj = transform_all_audio_files_to_npy(obj, True) # TODO Find out how to make async
         obj.save()
 
 
