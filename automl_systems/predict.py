@@ -1,16 +1,8 @@
-import os
 import pickle
-
-import numpy
-from autokeras.utils import pickle_from_file
-
-
 import sklearn
-from django.db import transaction
 
-from automl_server.settings import AUTO_ML_DATA_PATH
-from automl_systems.shared import load_ml_data, make_categorical_binary
-from training_server.models.validation_result import ValidationResult
+from autokeras.utils import pickle_from_file
+from automl_systems.shared import load_ml_data
 
 
 def predict(conf):

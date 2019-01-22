@@ -1,13 +1,13 @@
 from django.contrib import admin
 
 from automl_systems.preprocessing.audio_to_spectogram_to_npy import transform_all_audio_files_to_npy
+from preprocessing.models.file_preprocessor import AudioPreprocessor
 from training_server.models import AutoSklearnConfig
 
 from automl_systems.auto_sklearn.run import train as train_auto_sklearn
-from training_server.models.transform_audio_config import AudioReformater
 
 
-class TransformAudioConfigAdmin(admin.ModelAdmin):
+class AudioPreprocessorAdmin(admin.ModelAdmin):
     list_display = ('status','folder_name', 'input_file_format', 'output_file_format')
 
     list_filter = ('status',)
@@ -23,4 +23,4 @@ class TransformAudioConfigAdmin(admin.ModelAdmin):
         transform_all_audio_files_to_npy(obj) # TODO Find out how to make async
 
 
-admin.site.register(AudioReformater, TransformAudioConfigAdmin)
+admin.site.register(AudioPreprocessor, AudioPreprocessorAdmin)

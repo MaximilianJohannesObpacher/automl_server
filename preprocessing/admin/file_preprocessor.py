@@ -1,15 +1,15 @@
 from django.contrib import admin
 
 from automl_systems.shared import file_loader
-from training_server.models import FileReformater
-from training_server.models.label import Column
+from preprocessing.models.audio_preprocessor import FilePreprocessor
+from preprocessing.models.label import Column
 
 
 class ColumnsInline(admin.TabularInline):
 	model = Column
 
 
-class FileReformaterAdmin(admin.ModelAdmin):
+class FilePreprocessorAdmin(admin.ModelAdmin):
 	inlines = [ColumnsInline]
 
 	# TODO refactor for one set
@@ -38,7 +38,7 @@ class FileReformaterAdmin(admin.ModelAdmin):
 		return False
 
 
-admin.site.register(FileReformater, FileReformaterAdmin) # TODO correct typo
+# admin.site.register(FilePreprocessor, FilePreprocessorAdmin) # TODO correct typo
 
 
 def save_parquet_file(obj):

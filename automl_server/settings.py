@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'training_server',
+    'preprocessing',
+    'evaluation',
     'rest_framework'
 ]
 

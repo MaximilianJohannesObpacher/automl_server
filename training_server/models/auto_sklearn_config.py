@@ -1,9 +1,6 @@
-from celery import Celery
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
-#from training_server.automl_systems.autosklearn.run import train, add
-#from training_server.automl_systems.tpot.run import train as train_tpot
 from training_server.models.algorithm_config import AlgorithmConfig
 
 class AutoSklearnConfig(AlgorithmConfig):

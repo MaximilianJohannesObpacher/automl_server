@@ -52,6 +52,7 @@ class AlgorithmConfig(models.Model):
 	                                 help_text='training time until completion or interrupt (in seconds)')
 	input_one_hot_encoded = models.BooleanField(default=False, help_text='Handle one hot encoding by labeling the data with string instead to be accepted.')
 	make_one_hot_encoding_task_binary = models.BooleanField(default=False, help_text='Only possible for categorical data with one-hot-encoding. If the flag is checked, the first option is assumed to be option 0 and all options afterwards are assuemd to be option 1')
+	freeze_results = models.BooleanField(default=False, help_text='Click this to avoid tempering with the results by making the training immutable after executing it.')
 
 	def __str__(self):
 		return str(self.model_path)

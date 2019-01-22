@@ -25,8 +25,6 @@ from automl_systems.shared import load_ml_data, file_loader, make_categorical_bi
 from training_server.celery import app
 from automl_server.settings import AUTO_ML_MODELS_PATH, AUTO_ML_DATA_PATH
 from training_server.models import AutoSklearnConfig
-from training_server.models.validation_result import ValidationResult
-
 
 @app.task()
 def train(auto_sklearn_config_id):

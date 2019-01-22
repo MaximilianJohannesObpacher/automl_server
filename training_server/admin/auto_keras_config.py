@@ -22,7 +22,7 @@ class AutoKerasConfigAdmin(admin.ModelAdmin):
         if obj:
             if not 'framework' in readonly_fields:
                 readonly_fields.append('framework')
-            if obj.training_triggered:
+            if obj.training_triggered and obj.freeze_results:
                 return [f.name for f in self.model._meta.fields]
         return readonly_fields
 
@@ -33,8 +33,9 @@ class AutoKerasConfigAdmin(admin.ModelAdmin):
         obj.save()
         train_auto_keras(str(obj.id)) # TODO Find out how to make async
 
-    def has_add_permission(self, request, obj=None):
-        return False
-
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(AutoKerasConfigAdmin, self).get_form(request, obj, **kwargs)
+        form.base_fields['framework'].initial = 'auto_keras'
+        return form
 
 admin.site.register(AutoKerasConfig, AutoKerasConfigAdmin)

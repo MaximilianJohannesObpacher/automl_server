@@ -39,8 +39,8 @@ def transform_all_audio_files_to_npy(transform_config):
 		split_point = int(len(features_array) * 0.25)
 		validation_features = numpy.array(features_array[:split_point])
 		training_features = numpy.array(features_array[split_point:])
-		validation_labels = numpy.array(labels_array[:split_point])
-		training_labels = numpy.array(labels_array[split_point:])
+		validation_labels = labels_array[:split_point]
+		training_labels = labels_array[split_point:]
 
 		print('After: ' + str(numpy.unique(validation_labels, return_counts=True)) + ' other: ' +  str(numpy.unique(training_labels, return_counts=True)))
 
@@ -56,8 +56,8 @@ def transform_all_audio_files_to_npy(transform_config):
 			training_labels_binary = make_categorical_binary(training_labels, transform_config.binary_true_name)
 			validation_labels_binary = make_categorical_binary(validation_labels, transform_config.binary_true_name)
 
-			numpy.save(AUTO_ML_DATA_PATH + '/npy/training_labels_bin_' + str(timestamp) + '.npy', numpy.array(training_labels_binary))
-			numpy.save(AUTO_ML_DATA_PATH + '/npy/validation_labels_bin_' + str(timestamp) + '.npy', numpy.array(validation_labels_binary))
+			numpy.save(AUTO_ML_DATA_PATH + '/npy/training_labels_bin_' + str(timestamp) + '.npy', training_labels_binary)
+			(AUTO_ML_DATA_PATH + '/npy/validation_labels_bin_' + str(timestamp) + '.npy', validation_labels_binary)
 
 		transform_config.status = 'success'
 		transform_config.save()

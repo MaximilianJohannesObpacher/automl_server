@@ -1,6 +1,6 @@
 from django.db import models
 
-from training_server.models import AlgorithmConfig
+from training_server.models.algorithm_config import AlgorithmConfig
 
 
 class TpotConfig(AlgorithmConfig):

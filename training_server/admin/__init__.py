@@ -1,7 +1,8 @@
-from training_server.admin.algorithm_config import *
+from django.contrib.auth.models import Group, User
+
 from training_server.admin.auto_sklearn_config import *
 from training_server.admin.tpot_config import *
 from training_server.admin.auto_keras_config import *
-from training_server.admin.validation_result import *
-from training_server.admin.file_reformator import *
-from training_server.admin.tranform_audio_config import *
+
+admin.site.unregister(Group)
+admin.site.unregister(User)

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from automl_systems.predict import predict
-from training_server.models.validation_result import ValidationResult
+from evaluation.models.validation_result import ValidationResult
 
 
 class ValidationResultAdmin(admin.ModelAdmin):
