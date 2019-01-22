@@ -21,6 +21,14 @@ def load_ml_data(data_filename, labels_filename, one_hot_encoded, transform_to_b
 		return x, y
 		# TODO how to handel for keras: return x, make_one_hot_encoding_binary(y) if transform_to_binary else make_one_hot_encoding_categorical(y)
 
+def save_ml_data(data_filename, labels_filename):
+	x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, data_filename))
+	y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, labels_filename))
+	x = reformat_data(x)
+	y = make_one_hot_encoding_binary(y)
+	numpy.save(AUTO_ML_DATA_PATH+'/1'+data_filename, x)
+	numpy.save(AUTO_ML_DATA_PATH+'/1'+labels_filename, y)
+	return x, y
 
 def reformat_data(x):
 	print('Reformat started')

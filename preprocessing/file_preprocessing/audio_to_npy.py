@@ -3,6 +3,7 @@ import glob
 import os
 import random
 
+import imageio
 import numpy
 from PIL import Image
 from scipy.io.wavfile import read
@@ -32,6 +33,20 @@ def transform_all_audio_files_to_npy(transform_config, is_audio):
 				labels_array.append(label)
 			print('files read')
 
+		#if not is_audio:
+		#	print('features0')
+#
+		#	features_a = numpy.asarray(features_array).reshape(len(features_array), 128, 128, 1)
+		#	print('features1')
+#
+		#	t_features = numpy.concatenate((features_array, numpy.zeros(numpy.shape(features_array))), axis=3)
+		#	print('features2')
+#
+		#	features_array = numpy.concatenate((t_features, numpy.zeros(numpy.shape(features_a))), axis=3)
+		#	print('features3')
+
+		print('features_reformat success')
+		print(str(features_array))
 		features_labels = list(zip(features_array, labels_array))
 
 		# shuffling
@@ -51,24 +66,11 @@ def transform_all_audio_files_to_npy(transform_config, is_audio):
 
 		# saving as npy arrays
 		timestamp = str(datetime.datetime.now())
-		if not is_audio:
-			training_f = numpy.asarray(training_features).reshape(len(training_features), 128, 128, 1)
 
-			t_features = numpy.concatenate((training_features, numpy.zeros(numpy.shape(training_features))), axis=3)
-			t_features = numpy.concatenate((t_features, numpy.zeros(numpy.shape(training_f))), axis=3)
-
-			validation_f = numpy.asarray(validation_features).reshape(len(validation_features), 128, 128, 1)
-
-			v_features = numpy.concatenate((validation_features, numpy.zeros(numpy.shape(validation_features))), axis=3)
-			v_features = numpy.concatenate((v_features, numpy.zeros(numpy.shape(validation_f))), axis=3)
-
-			numpy.save(AUTO_ML_DATA_PATH + '/npy/training_features_' + str(timestamp) + '.npy', t_features)
-			numpy.save(AUTO_ML_DATA_PATH + '/npy/validation_features_' + str(timestamp) + '.npy', v_features)
-
-		else:
-			numpy.save(AUTO_ML_DATA_PATH + '/npy/training_features_' + str(timestamp) + '.npy',
+		print('trying to save audio')
+		numpy.save(AUTO_ML_DATA_PATH + '/npy/training_features_' + str(timestamp) + '.npy',
 			           numpy.array(training_features))
-			numpy.save(AUTO_ML_DATA_PATH + '/npy/validation_features_' + str(timestamp) + '.npy',
+		numpy.save(AUTO_ML_DATA_PATH + '/npy/validation_features_' + str(timestamp) + '.npy',
 			           numpy.array(validation_features))
 
 		transform_config.training_features_path = AUTO_ML_DATA_PATH + '/npy/training_features_' + str(timestamp) + '.npy'
@@ -104,13 +106,13 @@ def transform_all_audio_files_to_npy(transform_config, is_audio):
 
 def audio_to_npy(filepath):
 	a = read(os.path.join(filepath))
-	features = numpy.array(a[1], dtype=int)
+	features = numpy.array(a[1], dtype=float)
 	label = filepath.split('/')[-2]
 	return features, label
 
 def label_picture(filepath):
-	img = Image.open(filepath)
-	img.load()
+	img = imageio.imread(filepath)
 	label = filepath.split('/')[-2]
 	return img, label
+
 
