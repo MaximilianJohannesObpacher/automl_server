@@ -1,4 +1,4 @@
-version: '3'
+version: '2.4'
 
 services:
   db:
@@ -13,14 +13,4 @@ services:
     depends_on:
       - db
     entrypoint: /entrypoint.sh
-    shm_size: '8gb'
-  # redis:
-  #   image: "redis:alpine"
-  # celery:
-  #   build: .
-  #   command: bash -c "celery -A training_server.celery worker -l DEBUG -E"
-  #   volumes:
-  #   - .:/code
-  #   depends_on:
-  #   - db
-  #   - redis
+    shm_size: '40gb'

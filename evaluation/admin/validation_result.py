@@ -40,5 +40,4 @@ class ValidationResultAdmin(admin.ModelAdmin):
 		predict(obj)
 
 
-
 admin.site.register(ValidationResult, ValidationResultAdmin)
