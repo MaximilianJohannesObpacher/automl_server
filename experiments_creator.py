@@ -37,9 +37,9 @@ def start_experiment():
 		error_log.save()
 	else:
 		try:
-			audio_files_preprocessed = AudioPreprocessor.objects.get(
+			audio_files_preprocessed = AudioPreprocessor.objects.filter(
 				preprocessing_name='audio_preprocessing_experiment'
-			)
+			).last()
 		except AudioPreprocessor.DoesNotExist:
 			audio_files_preprocessed = None
 
@@ -60,9 +60,9 @@ def start_experiment():
 
 	else:
 		try:
-			pictures_preprocessed = PicturePreprocessor.objects.get(
+			pictures_preprocessed = PicturePreprocessor.objects.filter(
 				preprocessing_name='picture_preprocessing_experiment'
-			)
+			).last()
 		except PicturePreprocessor.DoesNotExist:
 			pictures_preprocessed = None
 
