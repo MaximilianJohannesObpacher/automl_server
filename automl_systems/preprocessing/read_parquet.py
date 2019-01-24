@@ -24,3 +24,4 @@ def preprocess_csv(filename):
 		features.to_pickle(os.path.join(AUTO_ML_DATA_PATH + '/pickle/features_' + filename))
 		target_slave.to_pickle(os.path.join(AUTO_ML_DATA_PATH + '/pickle/target_slave_' + filename))
 		target_ak0.to_pickle(os.path.join(AUTO_ML_DATA_PATH + '/pickle/target_ak0_' + filename))
+

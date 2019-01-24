@@ -39,6 +39,7 @@ class FilePreprocessor(models.Model):
 	binary_true_name = models.CharField(max_length=256, null=True, blank=True, default='perfect_condition', help_text='if binary transform categorical data to binary is true, all files in folder labeled with this name will be labeled as True while all other data will be labeled as false.')
 	input_folder_name = models.CharField(max_length=256, default='', blank=True, null=True)
 	input_data_type = models.CharField(blank=True, null=True, choices=datatype_choices, max_length=32)
+	preprocessing_name = models.CharField(max_length=255, null=True, blank=True)
 
 	def __str__(self):
 		return str(self.input_folder_name) + '_' + str(self.training_features_path)

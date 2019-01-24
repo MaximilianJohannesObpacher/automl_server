@@ -37,8 +37,8 @@ def train(auto_sklearn_config_id):
 		x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, auto_sklearn_config.training_data_filename))
 		y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, auto_sklearn_config.training_labels_filename))
 
-		#if auto_sklearn_config.preprocessing_object.input_folder_name == '/png/': #todo go for type
-		x = reformat_data(x)
+		if auto_sklearn_config.preprocessing_object.input_data_type == 'png':
+			x = reformat_data(x)
 
 		model = autosklearn.classification.AutoSklearnClassifier(
 			time_left_for_this_task=auto_sklearn_config.run_time,

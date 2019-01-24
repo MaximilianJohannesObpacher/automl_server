@@ -7,7 +7,7 @@ import sklearn
 from autokeras.utils import pickle_from_file
 
 from automl_server.settings import AUTO_ML_DATA_PATH
-from automl_systems.shared import load_ml_data
+from automl_systems.shared import load_ml_data, reformat_data
 
 
 def predict(conf):
@@ -17,6 +17,10 @@ def predict(conf):
 				my_model = pickle.load(f)
 			x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, conf.model.training_data_filename))
 			y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, conf.model.training_labels_filename))
+
+			if conf.model.preprocessing_object.input_data_type == 'png':
+				x = reformat_data(x)
+
 		elif conf.model.framework == 'auto_keras':
 			my_model = pickle_from_file(conf.model.model_path)
 			x, y = load_ml_data(conf.model.validation_data_filename, conf.model.validation_labels_filename, False, conf.model.make_one_hot_encoding_task_binary)

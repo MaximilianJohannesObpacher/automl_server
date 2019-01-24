@@ -1,5 +1,5 @@
 from preprocessing.admin import AudioPreprocessorAdmin, admin
-from preprocessing.file_preprocessing.audio_to_npy import transform_all_audio_files_to_npy
+from preprocessing.file_preprocessing.audio_picture_to_npy import transform_media_files_to_npy
 from preprocessing.models.picture_preprocessor import PicturePreprocessor
 
 
@@ -10,7 +10,7 @@ class PicturePreprocessorAdmin(AudioPreprocessorAdmin):
 
 	def save_model(self, request, obj, form, change):
 		print(str(obj))
-		obj = transform_all_audio_files_to_npy(obj, False)  # TODO Find out how to make async
+		obj = transform_media_files_to_npy(obj, False)  # TODO Find out how to make async
 		obj.input_data_type = 'png'
 		obj.save()
 

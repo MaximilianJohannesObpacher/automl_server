@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from preprocessing.file_preprocessing.audio_to_npy import transform_all_audio_files_to_npy
+from preprocessing.file_preprocessing.audio_picture_to_npy import transform_media_files_to_npy
 from preprocessing.models.audio_preprocessor import AudioPreprocessor
 
 
@@ -11,7 +11,7 @@ class AudioPreprocessorAdmin(admin.ModelAdmin):
     exclude = ('input_data_type',)
 
     def save_model(self, request, obj, form, change):
-        obj = transform_all_audio_files_to_npy(obj, True) # TODO Find out how to make async
+        obj = transform_media_files_to_npy(obj, True) # TODO Find out how to make async
         obj.input_data_type = 'wav'
         obj.save()
 

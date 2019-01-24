@@ -10,6 +10,7 @@ from scipy.io.wavfile import read
 
 from automl_server.settings import AUTO_ML_DATA_PATH
 from preprocessing.file_preprocessing.categorical_to_binary import make_categorical_binary
+from preprocessing.file_preprocessing.resize_images import generate_image_array, resize_images
 
 
 def pad_trunc_seq_rewrite(x, max_len):
@@ -24,7 +25,7 @@ def pad_trunc_seq_rewrite(x, max_len):
 	return x_new
 
 
-def transform_all_audio_files_to_npy(transform_config, is_audio):
+def transform_media_files_to_npy(transform_config, is_audio):
 	features_array = []
 	labels_array = []
 
@@ -32,20 +33,14 @@ def transform_all_audio_files_to_npy(transform_config, is_audio):
 
 		# get all files and put them in a features and a labels array
 		if is_audio:
-			for filepath in glob.iglob(AUTO_ML_DATA_PATH + transform_config.input_folder_name + '**/*.wav',
-			                           recursive=True):
+			for filepath in glob.iglob(AUTO_ML_DATA_PATH + transform_config.input_folder_name + '**/*.wav', recursive=True):
 				features, label = audio_to_npy(filepath)
 				features_array.append(features)
 				labels_array.append(label)
+		# case image
 		else:
-			for filepath in glob.iglob(AUTO_ML_DATA_PATH + transform_config.input_folder_name + '**/*.png',
-			                           recursive=True):
-				features , label = label_picture(filepath)
-				print('FTTTT:', features)
-
-				features_array.append(features)
-				labels_array.append(label)
-
+			resize_images()
+			features_array, labels_array = generate_image_array()
 
 
 		print('features_reformat success')
@@ -121,9 +116,3 @@ def audio_to_npy(filepath):
 	features = numpy.array(a[1], dtype=float)
 	label = filepath.split('/')[-2]
 	return features, label
-
-
-def label_picture(filepath):
-	img = cv2.resize(cv2.imread(filepath), (128,128))
-	label = filepath.split('/')[-2]
-	return img, label

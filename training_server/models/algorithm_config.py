@@ -76,3 +76,18 @@ class AlgorithmConfig(models.Model):
 
 	def __str__(self):
 		return str(self.model_path)
+
+	def save(self, *args, **kwargs):
+		if self.load_files_from == 'preprocessing_job' and self.preprocessing_object:
+			self.training_data_filename = self.preprocessing_object.training_features_path
+			self.validation_data_filename = self.preprocessing_object.evaluation_features_path
+
+			if self.task_type == 'binary_classification':
+				self.training_labels_filename = self.preprocessing_object.training_labels_path_binary
+				self.validation_labels_filename = self.preprocessing_object.evaluation_labels_path_binary
+			else:
+				self.training_labels_filename = self.preprocessing_object.training_labels_path
+				self.validation_labels_filename = self.preprocessing_object.evaluation_labels_path
+
+		super(AlgorithmConfig, self).save(*args, **kwargs)
+
