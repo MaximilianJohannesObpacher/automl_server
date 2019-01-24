@@ -50,7 +50,6 @@ def transform_media_files_to_npy(transform_config, is_audio):
 		#  shuffling
 		random.shuffle(features_labels)
 		features_array, labels_array = zip(*features_labels)
-		print('features_reformat success4')
 
 		print('Before:' + str(numpy.unique(labels_array, return_counts=True)))
 
@@ -101,6 +100,7 @@ def transform_media_files_to_npy(transform_config, is_audio):
 
 		transform_config.status = 'success'
 		print(transform_config.training_features_path)
+		transform_config.save()
 		return transform_config
 
 	except Exception as e:

@@ -14,7 +14,7 @@ import random
 
 from tpot import TPOTClassifier
 
-from automl_systems.shared import load_ml_data
+from automl_systems.shared import load_ml_data, reformat_data
 from training_server.celery import app
 from automl_server.settings import AUTO_ML_DATA_PATH, AUTO_ML_MODELS_PATH
 from training_server.models import TpotConfig
@@ -37,6 +37,9 @@ def train(tpot_config):
 
         x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, tpot_config.training_data_filename))
         y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, tpot_config.training_labels_filename))
+
+        if tpot_config.preprocessing_object.input_data_type == 'png':
+            x = reformat_data(x)
 
         # training the models
         print('about to train')

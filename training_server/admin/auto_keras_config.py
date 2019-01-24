@@ -25,8 +25,6 @@ class AutoKerasConfigAdmin(admin.ModelAdmin):
         else:
             fieldsets = list(fieldsets)
             fieldsets.append(['Resource Options:', {'fields': ('time_limit',)}])
-            fieldsets.append(['Caching and Storage:', {'fields': ('training_data_filename', 'training_labels_filename','validation_data_filename', 'validation_labels_filename')}])
-
 
             if obj.load_files_from == 'filename':
                 fieldsets.append(('Input Files', {'fields': ('training_data_filename', 'training_labels_filename','validation_data_filename', 'validation_labels_filename')}))

@@ -16,7 +16,7 @@ class TpotConfigAdmin(admin.ModelAdmin):
     def get_fieldsets(self, request, obj=None):
         fieldsets = (
             ('General Info:', {'fields': (
-            'training_name', 'framework', 'status', 'date_trained', 'model_path',
+            'training_name', 'status', 'date_trained', 'model_path',
             'additional_remarks', 'training_time')}),
             ('File Loading Strategy', {'fields': ('load_files_from',)}),
         )

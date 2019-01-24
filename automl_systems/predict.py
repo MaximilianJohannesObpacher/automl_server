@@ -15,6 +15,7 @@ def predict(conf):
 		if conf.model.framework == 'auto_sklearn' or  conf.model.framework == 'tpot':
 			with open(conf.model.model_path, 'rb') as f:
 				my_model = pickle.load(f)
+
 			x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, conf.model.training_data_filename))
 			y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, conf.model.training_labels_filename))
 
