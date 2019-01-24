@@ -24,7 +24,9 @@ def train(auto_keras_config_id):
 	try:
 		dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'auto_keras' + str(datetime.datetime.now()) + '.h5')
 
-		x, y = load_ml_data(auto_keras_config.training_data_filename, auto_keras_config.training_labels_filename, False, auto_keras_config.make_one_hot_encoding_task_binary)
+		x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, auto_keras_config.training_data_filename))
+		y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, auto_keras_config.training_labels_filename))
+		# x, y = load_ml_data(auto_keras_config.training_data_filename, auto_keras_config.training_labels_filename, False, auto_keras_config.make_one_hot_encoding_task_binary)
 
 		clf = ImageClassifier(verbose=auto_keras_config.verbose)
 

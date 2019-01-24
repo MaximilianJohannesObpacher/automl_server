@@ -16,7 +16,7 @@ import os
 import six.moves.cPickle as pickle
 from autosklearn.regression import AutoSklearnRegressor
 
-from automl_systems.shared import load_ml_data, file_loader
+from automl_systems.shared import load_ml_data, file_loader, reformat_data
 from training_server.celery import app
 from automl_server.settings import AUTO_ML_MODELS_PATH, AUTO_ML_DATA_PATH
 from training_server.models import AutoSklearnConfig
@@ -36,6 +36,9 @@ def train(auto_sklearn_config_id):
 		print('about to load')
 		x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, auto_sklearn_config.training_data_filename))
 		y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, auto_sklearn_config.training_labels_filename))
+
+		#if auto_sklearn_config.preprocessing_object.input_folder_name == '/png/': #todo go for type
+		x = reformat_data(x)
 
 		model = autosklearn.classification.AutoSklearnClassifier(
 			time_left_for_this_task=auto_sklearn_config.run_time,

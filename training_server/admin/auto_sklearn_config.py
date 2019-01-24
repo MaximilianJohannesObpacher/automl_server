@@ -81,11 +81,6 @@ class AutoSklearnConfigAdmin(admin.ModelAdmin):
 
     def response_add(self, request, obj, post_url_continue=None):
         return redirect('/admin/training_server/autosklearnconfig/' + str(obj.id) + '/change/')
-    #def get_form(self, request, obj=None, **kwargs):
-    #    form = super(AutoSklearnConfigAdmin, self).get_form(request, obj, **kwargs)
-    #    form.base_fields['framework'].initial = 'auto_sklearn'
-    #    return form
-
 
 
 admin.site.register(AutoSklearnConfig, AutoSklearnConfigAdmin)

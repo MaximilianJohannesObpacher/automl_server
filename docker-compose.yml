@@ -6,6 +6,7 @@ services:
   web:
     build: .
     command: python manage.py runserver 0.0.0.0:8003
+    # restart: always
     volumes:
       - .:/code
     ports:
@@ -13,4 +14,6 @@ services:
     depends_on:
       - db
     entrypoint: /entrypoint.sh
-    shm_size: '40gb'
+    shm_size: '8gb'
+    oom_kill_disable: true
+    tty: true
