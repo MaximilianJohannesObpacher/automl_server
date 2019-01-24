@@ -33,6 +33,7 @@ def transform_media_files_to_npy(transform_config, is_audio):
 
 		# get all files and put them in a features and a labels array
 		if is_audio:
+			print(is_audio)
 			for filepath in glob.iglob(AUTO_ML_DATA_PATH + transform_config.input_folder_name + '**/*.wav', recursive=True):
 				features, label = audio_to_npy(filepath)
 				features_array.append(features)
@@ -43,14 +44,11 @@ def transform_media_files_to_npy(transform_config, is_audio):
 			features_array, labels_array = generate_image_array()
 
 
-		print('features_reformat success')
 		print(len(features_array))
 		features_labels = list(zip(features_array, labels_array))
-		print('features_reformat success2')
 
 		#  shuffling
 		random.shuffle(features_labels)
-		print('features_reformat success3')
 		features_array, labels_array = zip(*features_labels)
 		print('features_reformat success4')
 

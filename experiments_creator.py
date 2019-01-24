@@ -81,7 +81,8 @@ def start_experiment():
 			preprocessing_object = audio_files_preprocessed,
 			load_files_from='preprocessing_job',
 			task_type= 'multiclass_classification',
-			freeze_results=True
+			freeze_results=True,
+			training_triggered=True
 		)
 
 		train_auto_sklearn(str(ask_config_1h_mc_audio.id))
@@ -97,7 +98,8 @@ def start_experiment():
 			preprocessing_object = audio_files_preprocessed,
 			load_files_from='preprocessing_job',
 			task_type='binary_classification',
-			freeze_results=True
+			freeze_results=True,
+			training_triggered=True
 		)
 		train_auto_sklearn(str(ask_config_1h_bc_audio.id))
 		print('Training 2 success!')
@@ -112,7 +114,8 @@ def start_experiment():
 			preprocessing_object = pictures_preprocessed,
 			load_files_from='preprocessing_job',
 			task_type= 'multiclass_classification',
-			freeze_results=True
+			freeze_results=True,
+			training_triggered=True
 		)
 		train_auto_sklearn(str(ask_config_1h_mc_png.id))
 		print('Training 3 success!')
@@ -127,7 +130,8 @@ def start_experiment():
 			preprocessing_object = pictures_preprocessed,
 			load_files_from='preprocessing_job',
 			task_type='binary_classification',
-			freeze_results=True
+			freeze_results=True,
+			training_triggered=True
 		)
 		train_auto_sklearn(str(ask_config_1h_bc_png.id))
 		print('Training 4 success!')
@@ -145,7 +149,8 @@ def start_experiment():
 			preprocessing_object = audio_files_preprocessed,
 			load_files_from='preprocessing_job',
 			task_type= 'multiclass_classification',
-			freeze_results=True
+			freeze_results=True,
+			training_triggered=True
 		)
 		train_auto_keras(str(ak_config_1h_mc_audio.id))
 		print('Training 5 success!')
@@ -159,7 +164,8 @@ def start_experiment():
 			preprocessing_object = audio_files_preprocessed,
 			load_files_from='preprocessing_job',
 			task_type= 'binary_classification',
-			freeze_results=True
+			freeze_results=True,
+			training_triggered=True
 		)
 		train_auto_keras(str(ak_config_1h_bc_audio.id))
 		print('Training 6 success!')
@@ -173,7 +179,8 @@ def start_experiment():
 			preprocessing_object = pictures_preprocessed,
 			load_files_from='preprocessing_job',
 			task_type= 'multiclass_classification',
-			freeze_results=True
+			freeze_results=True,
+			training_triggered=True
 		)
 		train_auto_keras(str(ak_config_1h_mc_png.id))
 		print('Training 7 success!')
@@ -187,7 +194,8 @@ def start_experiment():
 			preprocessing_object = pictures_preprocessed,
 			load_files_from='preprocessing_job',
 			task_type= 'binary_classification',
-			freeze_results=True
+			freeze_results=True,
+			training_triggered=True
 		)
 		train_auto_keras(str(ak_config_1h_bc_png.id))
 		print('Training 8 success!')
@@ -209,7 +217,8 @@ def start_experiment():
 			preprocessing_object = audio_files_preprocessed,
 			load_files_from='preprocessing_job',
 			task_type= 'multiclass_classification',
-			freeze_results=True
+			freeze_results=True,
+			training_triggered=True
 		)
 		train_tpot(str(tpot_config_1h_mc_audio.id))
 		print('Training 9 success!')
@@ -226,7 +235,8 @@ def start_experiment():
 			preprocessing_object = audio_files_preprocessed,
 			load_files_from='preprocessing_job',
 			task_type= 'binary_classification',
-			freeze_results=True
+			freeze_results=True,
+			training_triggered=True
 		)
 		train_tpot(str(tpot_config_1h_bc_audio.id))
 		print('Training 10 success!')
@@ -243,7 +253,8 @@ def start_experiment():
 			preprocessing_object = pictures_preprocessed,
 			load_files_from='preprocessing_job',
 			task_type= 'multiclass_classification',
-			freeze_results=True
+			freeze_results=True,
+			training_triggered=True
 		)
 		train_tpot(str(tpot_config_1h_mc_png.id))
 		print('Training 11 success!')
@@ -260,7 +271,8 @@ def start_experiment():
 			preprocessing_object = pictures_preprocessed,
 			load_files_from='preprocessing_job',
 			task_type= 'binary_classification',
-			freeze_results=True
+			freeze_results=True,
+			training_triggered=True
 		)
 		train_tpot(str(tpot_config_1h_bc_png.id))
 		print('Training 12 success!')
