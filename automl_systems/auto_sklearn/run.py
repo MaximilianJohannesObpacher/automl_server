@@ -3,6 +3,7 @@ import time
 
 import autosklearn.classification
 import billiard
+import numpy
 import sklearn.datasets
 import sklearn.metrics
 
@@ -11,17 +12,11 @@ import sklearn.metrics
 import datetime
 
 import autosklearn.classification
-import numpy
 import os
-import pandas
-import sys
 import six.moves.cPickle as pickle
-from autosklearn.estimators import AutoSklearnClassifier
 from autosklearn.regression import AutoSklearnRegressor
-from celery import shared_task
-from sklearn.model_selection import train_test_split
 
-from automl_systems.shared import load_ml_data, file_loader, make_categorical_binary
+from automl_systems.shared import load_ml_data, file_loader, reformat_data
 from training_server.celery import app
 from automl_server.settings import AUTO_ML_MODELS_PATH, AUTO_ML_DATA_PATH
 from training_server.models import AutoSklearnConfig
@@ -39,9 +34,12 @@ def train(auto_sklearn_config_id):
 		dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'auto_sklearn' + str(datetime.datetime.now()) + '.dump')
 
 		print('about to load')
-		x, y = load_ml_data(auto_sklearn_config.training_data_filename, auto_sklearn_config.training_labels_filename, auto_sklearn_config.input_one_hot_encoded, auto_sklearn_config.make_one_hot_encoding_task_binary)
+		x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, auto_sklearn_config.training_data_filename))
+		y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, auto_sklearn_config.training_labels_filename))
 
-		print('before training init')
+		if auto_sklearn_config.preprocessing_object.input_data_type == 'png':
+			x = reformat_data(x)
+
 		model = autosklearn.classification.AutoSklearnClassifier(
 			time_left_for_this_task=auto_sklearn_config.run_time,
 			per_run_time_limit=auto_sklearn_config.per_instance_runtime,

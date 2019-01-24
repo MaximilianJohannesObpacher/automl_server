@@ -1,7 +1,6 @@
 from django.contrib import admin
 
 from automl_systems.shared import file_loader
-from preprocessing.models.audio_preprocessor import FilePreprocessor
 from preprocessing.models.label import Column
 
 
@@ -27,18 +26,11 @@ class FilePreprocessorAdmin(admin.ModelAdmin):
 		# TODO this is the fileformat changer
 		# TODO Add additional task changer
 
-		#   tpot_config = TpotConfig.objects.create(**conf_dict)
-		#   redirect_path = '/admin/training_server/tpotconfig/' + str(tpot_config.id) + '/change/'
-		# return HttpResponseRedirect(redirect_path)
-
 	def has_change_permission(self, request, obj=None):
 		return False
 
 	def has_delete_permission(self, request, obj=None):
 		return False
-
-
-# admin.site.register(FilePreprocessor, FilePreprocessorAdmin) # TODO correct typo
 
 
 def save_parquet_file(obj):

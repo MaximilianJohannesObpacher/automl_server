@@ -14,9 +14,10 @@ import random
 
 from tpot import TPOTClassifier
 
-from automl_systems.shared import load_ml_data
+from automl_systems.shared import load_ml_data, reformat_data
 from training_server.celery import app
 from automl_server.settings import AUTO_ML_DATA_PATH, AUTO_ML_MODELS_PATH
+from training_server.models import TpotConfig
 
 random.seed(67)
 
@@ -30,10 +31,16 @@ target_name = 'bernie'
 @app.task()
 def train(tpot_config):
     try:
+        tpot_config = TpotConfig.objects.get(id=tpot_config)
         # Storing save location for models
         dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'tpot_' + str(datetime.datetime.now()) + '.dump')
 
-        x, y = load_ml_data(tpot_config.training_data_filename, tpot_config.training_labels_filename, tpot_config.input_one_hot_encoded, tpot_config.make_one_hot_encoding_task_binary)
+        x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, tpot_config.training_data_filename))
+        y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, tpot_config.training_labels_filename))
+
+        if tpot_config.preprocessing_object.input_data_type == 'png':
+            x = reformat_data(x)
+
         # training the models
         print('about to train')
         model = TPOTClassifier( #verbosity=2, max_time_mins=90, max_eval_time_mins=5, config_dict='TPOT light', population_size=4, generations=3, n_jobs=1)

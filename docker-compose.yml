@@ -1,4 +1,4 @@
-version: '3'
+version: '2.4'
 
 services:
   db:
@@ -6,6 +6,7 @@ services:
   web:
     build: .
     command: python manage.py runserver 0.0.0.0:8003
+    restart: always
     volumes:
       - .:/code
     ports:
@@ -14,13 +15,5 @@ services:
       - db
     entrypoint: /entrypoint.sh
     shm_size: '8gb'
-  redis:
-    image: "redis:alpine"
-  celery:
-    build: .
-    command: bash -c "celery -A training_server.celery worker -l DEBUG -E"
-    volumes:
-    - .:/code
-    depends_on:
-    - db
-    - redis
+    oom_kill_disable: true
+    tty: true
