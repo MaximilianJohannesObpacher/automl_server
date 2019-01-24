@@ -17,6 +17,7 @@ from tpot import TPOTClassifier
 from automl_systems.shared import load_ml_data
 from training_server.celery import app
 from automl_server.settings import AUTO_ML_DATA_PATH, AUTO_ML_MODELS_PATH
+from training_server.models import TpotConfig
 
 random.seed(67)
 
@@ -30,6 +31,7 @@ target_name = 'bernie'
 @app.task()
 def train(tpot_config):
     try:
+        tpot_config = TpotConfig.objects.get(id=tpot_config)
         # Storing save location for models
         dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'tpot_' + str(datetime.datetime.now()) + '.dump')
 

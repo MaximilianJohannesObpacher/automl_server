@@ -78,7 +78,7 @@ class TpotConfigAdmin(admin.ModelAdmin):
             obj.training_triggered = True
             obj.status = 'waiting'
             obj.save()
-            train(obj)
+            train(str(obj.id))
 
 
     def response_add(self, request, obj, post_url_continue=None):
