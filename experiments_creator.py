@@ -19,6 +19,7 @@ def start_experiment(runtime_seconds, experiment_id):
 	if not created:
 		# Skipping process where error happened
 		error_log.step += 1
+		error_log.save()
 
 	if error_log.step < 1:
 
