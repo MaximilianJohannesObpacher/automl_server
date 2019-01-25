@@ -30,6 +30,7 @@ def train(auto_keras_config_id):
 		y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, auto_keras_config.training_labels_filename))
 		# x, y = load_ml_data(auto_keras_config.training_data_filename, auto_keras_config.training_labels_filename, False, auto_keras_config.make_one_hot_encoding_task_binary)
 
+		# TODO this might not work on low ram machines work, but array has to be 3d
 		if auto_keras_config.preprocessing_object.input_data_type == 'wav':
 			array4d = []
 			i=0
