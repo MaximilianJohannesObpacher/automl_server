@@ -5,7 +5,7 @@ from shutil import copyfile
 import numpy
 import pandas as pd
 
-from automl_server.settings import AUTO_ML_DATA_PATH
+from automl_server.settings import AUTO_ML_DATA_PATH, AUTO_ML_MODELS_PATH
 
 
 def load_ml_data(data_filename, labels_filename, one_hot_encoded, transform_to_binary):
@@ -105,3 +105,10 @@ def file_loader(features_name, labels_name):
 	features_path, labels_path = get_file_path(features_name, labels_name)
 
 	return load_from_folder(features_path, labels_path)
+
+def load_existing_model():
+	from keras.applications import resnet50
+
+	model = resnet50.ResNet50(include_top=True, weights='imagenet')
+	model.load_weights(os.path.join(AUTO_ML_MODELS_PATH, 'resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5'))
+	model.compile(optimizer='rmsprop', loss='categorical_crossentropy')

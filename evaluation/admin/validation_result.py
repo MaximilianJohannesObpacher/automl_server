@@ -20,10 +20,7 @@ class ValidationResultAdmin(admin.ModelAdmin):
 	framework.short_description = 'AutoML-Framework'
 
 	def classification_task(self, obj):
-		if obj.model.make_one_hot_encoding_task_binary:
-			return 'binary'
-		else:
-			return 'multiclass'
+		return obj.model.task_type
 
 	classification_task.admin_order_field = 'classification_task'
 	classification_task.short_description = 'Classification Task'

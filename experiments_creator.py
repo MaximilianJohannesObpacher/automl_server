@@ -1,9 +1,11 @@
+from automl_systems.predict import predict
+from evaluation.models.validation_result import ValidationResult
 from preprocessing.file_preprocessing.audio_picture_to_npy import transform_media_files_to_npy
 from preprocessing.models.audio_preprocessor import AudioPreprocessor
 
 # Preprocess audio files
 from preprocessing.models.picture_preprocessor import PicturePreprocessor
-from training_server.models import AutoSklearnConfig, AutoKerasConfig, TpotConfig, ErrorLog
+from training_server.models import AutoSklearnConfig, AutoKerasConfig, TpotConfig, ErrorLog, AlgorithmConfig
 
 from automl_systems.auto_sklearn.run import train as train_auto_sklearn
 from automl_systems.auto_keras.run import train as train_auto_keras
@@ -16,10 +18,18 @@ def start_experiment(runtime_seconds, experiment_id):
 	print('in experiment')
 	if created:
 		error_log.step = 0
-	if not created:
-		# Skipping process where error happened
-		error_log.step += 1
+		error_log.model_ids = []
 		error_log.save()
+	else:
+		# Skipping process where error happened
+		if error_log.step == 1337:
+			all_model_ids = error_log.model_ids
+			# Remove First model_id to skip
+			if len(all_model_ids)>0:
+				error_log.model_ids.remove(all_model_ids[0])
+		else:
+			error_log.step += 1
+			error_log.save()
 
 	if error_log.step < 1:
 
@@ -88,6 +98,7 @@ def start_experiment(runtime_seconds, experiment_id):
 
 		train_auto_sklearn(str(ask_config_1h_mc_audio.id))
 		print('Training 1 success!')
+		error_log.model_ids.append(ask_config_1h_mc_audio.id)
 		error_log.step += 1
 		error_log.save()
 
@@ -106,6 +117,7 @@ def start_experiment(runtime_seconds, experiment_id):
 		)
 		train_auto_sklearn(str(ask_config_1h_bc_audio.id))
 		print('Training 2 success!')
+		error_log.model_ids.append(ask_config_1h_bc_audio.id)
 		error_log.step += 1
 		error_log.save()
 
@@ -124,6 +136,7 @@ def start_experiment(runtime_seconds, experiment_id):
 		)
 		train_auto_sklearn(str(ask_config_1h_mc_png.id))
 		print('Training 3 success!')
+		error_log.model_ids.append(ask_config_1h_mc_png.id)
 		error_log.step += 1
 		error_log.save()
 
@@ -142,6 +155,7 @@ def start_experiment(runtime_seconds, experiment_id):
 		)
 		train_auto_sklearn(str(ask_config_1h_bc_png.id))
 		print('Training 4 success!')
+		error_log.model_ids.append(ask_config_1h_bc_png.id)
 		error_log.step += 1
 		error_log.save()
 
@@ -178,6 +192,7 @@ def start_experiment(runtime_seconds, experiment_id):
 		)
 		train_auto_keras(str(ak_config_1h_bc_audio.id))
 		print('Training 6 success!')
+		error_log.model_ids.append(ak_config_1h_bc_audio.id)
 		error_log.step += 1
 		error_log.save()
 
@@ -194,6 +209,7 @@ def start_experiment(runtime_seconds, experiment_id):
 		)
 		train_auto_keras(str(ak_config_1h_mc_png.id))
 		print('Training 7 success!')
+		error_log.model_ids.append(ak_config_1h_mc_png.id)
 		error_log.step += 1
 		error_log.save()
 
@@ -210,6 +226,7 @@ def start_experiment(runtime_seconds, experiment_id):
 		)
 		train_auto_keras(str(ak_config_1h_bc_png.id))
 		print('Training 8 success!')
+		error_log.model_ids.append(ak_config_1h_bc_png.id)
 		error_log.step += 1
 		error_log.save()
 
@@ -236,6 +253,7 @@ def start_experiment(runtime_seconds, experiment_id):
 		)
 		train_tpot(str(tpot_config_1h_mc_audio.id))
 		print('Training 9 success!')
+		error_log.model_ids.append(tpot_config_1h_mc_audio.id)
 		error_log.step += 1
 		error_log.save()
 
@@ -257,6 +275,7 @@ def start_experiment(runtime_seconds, experiment_id):
 		)
 		train_tpot(str(tpot_config_1h_bc_audio.id))
 		print('Training 10 success!')
+		error_log.model_ids.append(tpot_config_1h_bc_audio.id)
 		error_log.step += 1
 		error_log.save()
 
@@ -278,6 +297,7 @@ def start_experiment(runtime_seconds, experiment_id):
 		)
 		train_tpot(str(tpot_config_1h_mc_png.id))
 		print('Training 11 success!')
+		error_log.model_ids.append(tpot_config_1h_mc_png.id)
 		error_log.step += 1
 		error_log.save()
 
@@ -299,7 +319,34 @@ def start_experiment(runtime_seconds, experiment_id):
 		)
 		train_tpot(str(tpot_config_1h_bc_png.id))
 		print('Training 12 success!')
+		error_log.model_ids.append(tpot_config_1h_bc_png.id)
 		error_log.step += 1
 		error_log.save()
+
+	for training_config_id in error_log.model_ids:
+		error_log.step = 1337
+
+		training_config = AlgorithmConfig.objects.get(id=training_config_id)
+		if training_config.model_path:
+			ac = ValidationResult.objects.create(
+				model=training_config,
+				scoring_strategy='accuracy'
+			)
+			predict(ac)
+			if training_config.task_type=='binary_classification':
+				pr = ValidationResult.objects.create(
+					model=training_config,
+					scoring_strategy='precission'
+				)
+				predict(pr)
+				ra = ValidationResult.objects.create(
+					model=training_config,
+					scoring_strategy='roc_auc'
+				)
+				predict(ra)
+		# TODO trigger calc of valr.
+		error_log.model_ids.remove(training_config_id)
+		error_log.save()
+	error_log.step += 1
 
 	return print('success!')

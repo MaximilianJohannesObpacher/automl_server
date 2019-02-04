@@ -53,7 +53,7 @@ def transform_media_files_to_npy(transform_config, is_audio):
 
 		print('Before:' + str(numpy.unique(labels_array, return_counts=True)))
 
-		split_point = int(len(features_array) * 0.25)
+		split_point = int(len(features_array) * 0.3)
 		validation_features = features_array[:split_point]
 		training_features = features_array[split_point:]
 		validation_labels = labels_array[:split_point]
