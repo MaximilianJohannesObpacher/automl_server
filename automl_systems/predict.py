@@ -151,5 +151,5 @@ def plot_confusion_matrix(conf, cm,
     plt.ylabel('True label')
     plt.xlabel('Predicted label\naccuracy={:0.4f}; misclass={:0.4f}'.format(accuracy, misclass))
     plt.show()
-    print('plots/' + conf.model.model_path.split('_')[-1] + ('normalized' if normalize==True else '') +'.jpg')
-    plt.savefig('plots/' + conf.model.model_path.split('_')[-1] + ('normalized' if normalize==True else '') +'.jpg')
+    print('plots/' + conf.model.framework + '_' + conf.model.training_time + ('_normalized' if normalize==True else '') +'.jpg')
+    plt.savefig('plots/' + conf.model.framework + '_' + conf.model.training_time + ('_normalized' if normalize==True else '') +'.jpg')
