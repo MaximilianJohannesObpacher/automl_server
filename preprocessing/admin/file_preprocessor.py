@@ -38,19 +38,14 @@ def save_parquet_file(obj):
 
 	names = []
 	for name in [obj.input_file_name, obj.labels_file_name]:
-		print('0')
 		if name.split('.'):
-			print('1')
 			name = name.rsplit(' ', 1)[0]
 			names.append(name)
 
 	for name in names:
 		if obj.output_file_format == 'csv':
-			print('a')
 			feature_data.to_csv(name + '.csv')
 		elif obj.output_file_format == 'npy':
-			print('b')
 			feature_data.as_matrix(name + '.npy')
 		elif obj.output_file_format == 'pkl':
-			print('c')
 			feature_data.to_pickle(name + '.pkl')

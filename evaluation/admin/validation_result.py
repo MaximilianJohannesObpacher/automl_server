@@ -1,8 +1,11 @@
 from django.contrib import admin
 
 from automl_systems.predict import predict
+from evaluation.management.evaluate_accuracy import evaluate_all_models_accuracy
 from evaluation.models.validation_result import ValidationResult
-
+def evaluate_every_models_accuracy(modeladmin, request, queryset):
+	evaluate_all_models_accuracy()
+	evaluate_every_models_accuracy.short_description = "evaluate all accuracies!"
 
 class ValidationResultAdmin(admin.ModelAdmin):
 	list_display = ('framework', 'model_short_characterisation', 'status', 'classification_task', 'scoring_strategy', 'score')
@@ -12,6 +15,7 @@ class ValidationResultAdmin(admin.ModelAdmin):
 	)
 	readonly_fields = ('status', 'score', 'additional_remarks')
 	list_filter = ('status', 'scoring_strategy')
+	actions = [evaluate_every_models_accuracy]
 
 	def framework(self, obj):
 		return obj.model.framework

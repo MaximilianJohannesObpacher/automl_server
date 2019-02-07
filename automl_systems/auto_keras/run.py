@@ -35,7 +35,6 @@ def train(auto_keras_config_id):
 			array4d = []
 			i=0
 			for datapoint in x:
-				print(i)
 				x_3d = datapoint.reshape((172,128,10)).transpose()
 				array4d.append(x_3d)
 				i+=1

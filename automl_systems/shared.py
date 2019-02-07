@@ -9,8 +9,8 @@ from automl_server.settings import AUTO_ML_DATA_PATH, AUTO_ML_MODELS_PATH
 
 
 def load_ml_data(data_filename, labels_filename, one_hot_encoded, transform_to_binary):
-	x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, data_filename))
-	y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, labels_filename))
+	x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, data_filename.replace(':', '_')))
+	y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, labels_filename.replace(':', '_')))
 	print('loaded')
 
 	if one_hot_encoded:
@@ -106,9 +106,10 @@ def file_loader(features_name, labels_name):
 
 	return load_from_folder(features_path, labels_path)
 
-def load_existing_model():
+def load_resnet50_model():
 	from keras.applications import resnet50
 
 	model = resnet50.ResNet50(include_top=True, weights='imagenet')
-	model.load_weights(os.path.join(AUTO_ML_MODELS_PATH, 'resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5'))
 	model.compile(optimizer='rmsprop', loss='categorical_crossentropy')
+	return model
+

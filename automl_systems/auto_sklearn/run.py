@@ -16,7 +16,7 @@ import os
 import six.moves.cPickle as pickle
 from autosklearn.regression import AutoSklearnRegressor
 
-from automl_systems.shared import load_ml_data, file_loader, reformat_data
+from automl_systems.shared import load_ml_data, file_loader, reformat_data, load_resnet50_model
 from training_server.celery import app
 from automl_server.settings import AUTO_ML_MODELS_PATH, AUTO_ML_DATA_PATH
 from training_server.models import AutoSklearnConfig
@@ -33,7 +33,6 @@ def train(auto_sklearn_config_id):
 
 		dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'auto_sklearn' + str(datetime.datetime.now()) + '.dump')
 
-		print('about to load')
 		x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, auto_sklearn_config.training_data_filename))
 		y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, auto_sklearn_config.training_labels_filename))
 
@@ -61,7 +60,6 @@ def train(auto_sklearn_config_id):
 			smac_scenario_args=auto_sklearn_config.smac_scenario_args,
 			logging_config=auto_sklearn_config.logging_config,
 			)
-
 		print('before training start')
 		start = time.time()
 		model.fit(x, y)
