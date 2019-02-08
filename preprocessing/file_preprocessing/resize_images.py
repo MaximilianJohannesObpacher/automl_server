@@ -33,12 +33,11 @@ def create_resized_copy_of_image(img, max_dimen, image_path):
 	img.save(image_root + '/' + file_name)
 
 
-def resize_images():
+def resize_images(dimens):
 	for filepath in glob.iglob(AUTO_ML_DATA_PATH + '/png/**/*.png', recursive=True):
 		img = Image.open(filepath)
 		image_path = img.filename
-		create_resized_copy_of_image(img, 128, image_path)
-
+		create_resized_copy_of_image(img, dimens, image_path)
 
 
 def generate_image_array():

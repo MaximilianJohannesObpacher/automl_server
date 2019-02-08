@@ -17,8 +17,6 @@ def predict(conf):
             with open(conf.model.model_path.replace(':', '_'), 'rb') as f:
                 my_model = pickle.load(f)
 
-            print('load successs!!!!', AUTO_ML_DATA_PATH)
-
             x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, conf.model.validation_data_filename.replace(':', '_')))
             y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, conf.model.validation_labels_filename.replace(':', '_')))
 
@@ -31,9 +29,7 @@ def predict(conf):
         else:
             print('notimpl (epic fail)')
 
-        print('about to pred.')
         y_pred = my_model.predict(x)
-        print('about to acc')
 
         if conf.scoring_strategy == 'accuracy':
             score=sklearn.metrics.accuracy_score(y, y_pred)
@@ -45,7 +41,6 @@ def predict(conf):
             score = 0
             print('epic fail! no Strat applied')
 
-        print('about to get confusion_matrix!')
         print(numpy.unique((y)))
 
         cnf_matrix = confusion_matrix(y, y_pred)
@@ -55,15 +50,13 @@ def predict(conf):
             target_names = numpy.unique(y)
         else:
             for y in numpy.unique(y):
-                print(str(len(target_names) + 1))
-                target_names.append(str(len(target_names) + 1) + '_' + y.split('_')[0])
+                target_names.append(y.replace('_behavior', '').replace('_rod(0.5mm)', '').replace('_condition', '').replace('_element', '').replace('force_', ''))
 
         plot_confusion_matrix(conf=conf,cm=cnf_matrix,
                               normalize=False,
                               target_names=target_names,
                               title="Confusion Matrix")
 
-        print('savy!')
         conf.status = 'success'
         conf.score = str(round(score,4))
         conf.save()
@@ -120,7 +113,7 @@ def plot_confusion_matrix(conf, cm,
     if cmap is None:
         cmap = plt.get_cmap('Blues')
 
-    plt.figure(figsize=(10,8))
+    plt.figure(figsize=(13, 11))
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.title(title)
     plt.colorbar()

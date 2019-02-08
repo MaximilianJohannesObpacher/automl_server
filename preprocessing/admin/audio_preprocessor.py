@@ -1,7 +1,10 @@
-from django.contrib import admin
+import os
+from os import read
 
-from preprocessing.file_preprocessing.audio_picture_to_npy import transform_media_files_to_npy
+import numpy
+from django.contrib import admin
 from preprocessing.models.audio_preprocessor import AudioPreprocessor
+from preprocessing.models.file_preprocessor import FilePreprocessor
 
 
 class AudioPreprocessorAdmin(admin.ModelAdmin):
@@ -12,7 +15,7 @@ class AudioPreprocessorAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         obj.input_folder_name='/wav/'
-        transform_media_files_to_npy(obj, True) # TODO Find out how to make async
+        FilePreprocessor.transform_media_files_to_npy(obj, True) # TODO Find out how to make async
         obj.input_data_type = 'wav'
         obj.save()
 

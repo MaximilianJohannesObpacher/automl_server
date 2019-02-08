@@ -1,16 +1,8 @@
 from django.contrib import admin
 
 from automl_systems.shared import file_loader
-from preprocessing.models.label import Column
-
-
-class ColumnsInline(admin.TabularInline):
-	model = Column
-
 
 class FilePreprocessorAdmin(admin.ModelAdmin):
-	inlines = [ColumnsInline]
-
 	# TODO refactor for one set
 	# depending on framework selection forward to the submodel
 	def response_add(self, request, obj, post_url_continue=None):

@@ -1,6 +1,6 @@
 from automl_systems.predict import predict
 from evaluation.models.validation_result import ValidationResult
-from preprocessing.file_preprocessing.audio_picture_to_npy import transform_media_files_to_npy
+from preprocessing.file_preprocessing.media_to_npy import transform_media_files_to_npy
 from preprocessing.models.audio_preprocessor import AudioPreprocessor
 
 # Preprocess audio files
