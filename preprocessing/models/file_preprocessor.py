@@ -8,7 +8,6 @@ from django.db import models
 from scipy.io.wavfile import read
 
 from automl_server.settings import AUTO_ML_DATA_PATH
-from preprocessing.file_preprocessing.resize_images import resize_images, generate_image_array
 
 
 class FilePreprocessorManager(models.Manager):
@@ -54,19 +53,7 @@ class FilePreprocessor(models.Model):
 	def __str__(self):
 		return str(self.input_folder_name) + '_' + str(self.training_features_path)
 
-	def audio_to_npy(self, filepath):
-		a = read(filepath)
-
-		if self.output_data_format == 'float':
-			dtype = float
-		else:
-			dtype = int
-
-		features = numpy.array(a[1], dtype=dtype)
-		label = filepath.split('/')[-2]
-		return features, label
-
-	def make_categorical_binary(labels, true_name):
+	def make_categorical_binary(self, labels, true_name):
 		bin_labels = []
 
 		for label in labels:
@@ -93,8 +80,8 @@ class FilePreprocessor(models.Model):
 					labels_array.append(label)
 			# case image
 			else:
-				resize_images(self.output_image_dimens)
-				features_array, labels_array = generate_image_array()
+				self.resize_images(self.output_image_dimens)
+				features_array, labels_array = self.generate_image_array()
 
 			print(len(features_array))
 			features_labels = list(zip(features_array, labels_array))

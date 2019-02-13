@@ -9,7 +9,7 @@ class PicturePreprocessorAdmin(AudioPreprocessorAdmin):
 
 	def save_model(self, request, obj, form, change):
 		obj.input_folder_name = '/png/'
-		obj = obj.transform_media_files_to_npy(False)  # TODO Find out how to make async
+		obj.transform_media_files_to_npy(False)  # TODO Find out how to make async
 		obj.input_data_type = 'png'
 		obj.save()
 

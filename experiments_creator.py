@@ -1,6 +1,5 @@
 from automl_systems.predict import predict
 from evaluation.models.validation_result import ValidationResult
-from preprocessing.file_preprocessing.media_to_npy import transform_media_files_to_npy
 from preprocessing.models.audio_preprocessor import AudioPreprocessor
 
 # Preprocess audio files
@@ -40,7 +39,7 @@ def start_experiment(runtime_seconds, experiment_id):
 			input_data_type='wav',
 			preprocessing_name='audio_preprocessing_experiment'
 		)
-		transform_media_files_to_npy(audio_preprocess_config, is_audio=True)
+		audio_preprocess_config.transform_media_files_to_npy(is_audio=True)
 		audio_files_preprocessed = AudioPreprocessor.objects.get(id=audio_preprocess_config.id)
 		print('Audio preprocess_success!')
 		error_log.step += 1
@@ -61,7 +60,7 @@ def start_experiment(runtime_seconds, experiment_id):
 			input_data_type='png',
 			preprocessing_name='picture_preprocessing_experiment'
 		)
-		transform_media_files_to_npy(pictures_preprocess_config, is_audio=False)
+		pictures_preprocess_config.transform_media_files_to_npy(is_audio=False)
 		pictures_preprocessed = PicturePreprocessor.objects.get(id=pictures_preprocess_config.id)
 		print('Picture preprocess_success!')
 

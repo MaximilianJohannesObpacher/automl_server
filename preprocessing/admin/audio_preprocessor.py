@@ -1,6 +1,4 @@
 import os
-from os import read
-
 import numpy
 from django.contrib import admin
 from preprocessing.models.audio_preprocessor import AudioPreprocessor
