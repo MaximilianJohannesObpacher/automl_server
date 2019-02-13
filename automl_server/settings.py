@@ -89,11 +89,11 @@ DATABASES = {
     }
 }
 
-AUTO_ML_DATA_PATH = BASE_DIR + '/automl_systems/ml_data'
-AUTO_ML_MODELS_PATH = BASE_DIR + '/automl_systems/ml_models'
-SPECTOGRAMS_PATH = BASE_DIR + '/automl_systems/spectograms'
-RECORDINGS_PATH = BASE_DIR + '/automl_systems/recordings'
-RESULTS_PATH = BASE_DIR + '/automl_systems/results'
+AUTO_ML_DATA_PATH = BASE_DIR + '/media/ml_data'
+AUTO_ML_MODELS_PATH = BASE_DIR + '/media/ml_models'
+SPECTOGRAMS_PATH = BASE_DIR + '/media/spectograms'
+RECORDINGS_PATH = BASE_DIR + '/media/recordings'
+RESULTS_PATH = BASE_DIR + '/media/results'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

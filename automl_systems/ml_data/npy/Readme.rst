@@ -1,1 +1,0 @@
-Contains the npy arrays prepared for ml tasks.

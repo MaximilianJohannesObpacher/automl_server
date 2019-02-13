@@ -5,9 +5,6 @@ from django.shortcuts import redirect
 
 from training.models import AutoSklearnTraining
 
-from automl_systems.auto_sklearn.run import train as train_auto_sklearn
-
-
 class AutoSklearnTrainingAdmin(admin.ModelAdmin):
     list_display = ('status', 'date_trained', 'model_path', 'additional_remarks')
     list_filter = ('status',)
@@ -77,7 +74,7 @@ class AutoSklearnTrainingAdmin(admin.ModelAdmin):
             obj.training_triggered = True
             obj.status = 'waiting'
             obj.save()
-            train_auto_sklearn(str(obj.id)) # TODO Find out how to make async
+            obj.train()  # TODO Find out how to make async
 
     def response_add(self, request, obj, post_url_continue=None):
         return redirect('/admin/training/autosklearntraining/' + str(obj.id) + '/change/')

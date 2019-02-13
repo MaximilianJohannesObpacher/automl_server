@@ -1,7 +1,18 @@
+import datetime
+import os
+import time
+
+
+import autosklearn.classification
+import numpy
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
+from automl_server.settings import AUTO_ML_MODELS_PATH, AUTO_ML_DATA_PATH
+from shared import reformat_data
 from training.models.auto_ml_training import AutoMlTraining
+
+import six.moves.cPickle as pickle
 
 class AutoSklearnTraining(AutoMlTraining):
     RANDOM_FOREST = 'random_forest',
@@ -237,4 +248,66 @@ class AutoSklearnTraining(AutoMlTraining):
     # TODO Disable Save if training already triggered
     # TODO Enable API-Endpoints
     # TODO Add prediction and prediction result models and endpoints
+
+    def train(self):
+
+        self.status = 'in_progress'
+        self.save()
+        # Storing save location for models
+
+        try:
+
+            dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'auto_sklearn' + str(datetime.datetime.now()) + '.dump')
+
+            x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, self.training_data_filename))
+            y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, self.training_labels_filename))
+
+            if self.preprocessing_object.input_data_type == 'png':
+                x = reformat_data(x)
+
+            model = autosklearn.classification.AutoSklearnClassifier(
+                time_left_for_this_task=self.run_time,
+                per_run_time_limit=self.per_instance_runtime,
+                initial_configurations_via_metalearning=self.initial_configurations_via_metalearning,
+                ml_memory_limit=self.memory_limit,
+                ensemble_size=self.ensemble_size,
+                ensemble_nbest=self.ensemble_nbest,
+                seed=self.seed,
+                include_estimators=self.include_estimators,
+                exclude_estimators=self.exclude_estimators,
+                include_preprocessors=self.include_preprocessors,
+                exclude_preprocessors=self.exclude_preprocessors,
+                resampling_strategy=self.resampling_strategy,
+                tmp_folder=self.tmp_folder,
+                output_folder=self.output_folder,
+                delete_tmp_folder_after_terminate=self.delete_tmp_folder_after_terminate,
+                delete_output_folder_after_terminate=self.delete_output_folder_after_terminate,
+                shared_mode=self.shared_mode,
+                smac_scenario_args=self.smac_scenario_args,
+                logging_config=self.logging_config,
+            )
+            print('before training start')
+            start = time.time()
+            model.fit(x, y)
+            end = time.time()
+            print(model.show_models())
+            # storing the best performer
+            with open(dump_file, 'wb') as f:
+                pickle.dump(model, f)
+
+            self.training_time = round(end - start, 2)
+            self.status = 'success'
+            self.model_path = dump_file
+            self.save()
+            print('Status final ' + self.status)
+
+        except Exception as e:
+            end = time.time()
+            if 'start' in locals():
+                print('failed after:' + str(end - start))
+                self.training_time = round(end - start, 2)
+
+            self.status = 'fail'
+            self.additional_remarks = e
+            self.save()
 

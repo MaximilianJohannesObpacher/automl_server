@@ -1,13 +1,12 @@
 from django.contrib import admin
 
-from automl_systems.predict import predict
 from evaluation.management.evaluate_accuracy import evaluate_all_models_accuracy
-from evaluation.models.validation_result import ValidationResult
+from evaluation.models.validation_result import Validator
 def evaluate_every_models_accuracy(modeladmin, request, queryset):
 	evaluate_all_models_accuracy()
 	evaluate_every_models_accuracy.short_description = "evaluate all accuracies!"
 
-class ValidationResultAdmin(admin.ModelAdmin):
+class ValidatorAdmin(admin.ModelAdmin):
 	list_display = ('framework', 'model_short_characterisation', 'status', 'classification_task', 'scoring_strategy', 'score')
 	fieldsets = (
 		('Settings:', {'fields': ('model', 'scoring_strategy')}),
@@ -38,7 +37,7 @@ class ValidationResultAdmin(admin.ModelAdmin):
 	def save_model(self, request, obj, form, change):
 		obj.status = 'waiting'
 		obj.save()
-		predict(obj)
+		obj.predict()
 
 
-admin.site.register(ValidationResult, ValidationResultAdmin)
+admin.site.register(Validator, ValidatorAdmin)

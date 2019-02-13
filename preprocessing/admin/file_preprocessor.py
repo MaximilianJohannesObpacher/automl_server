@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from automl_systems.shared import file_loader
+from shared import file_loader
 
 class FilePreprocessorAdmin(admin.ModelAdmin):
 	# TODO refactor for one set

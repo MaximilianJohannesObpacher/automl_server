@@ -1,15 +1,9 @@
-from automl_systems.predict import predict
-from evaluation.models.validation_result import ValidationResult
+from evaluation.models.validation_result import Validator
 from preprocessing.models.audio_preprocessor import AudioPreprocessor
 
 # Preprocess audio files
 from preprocessing.models.picture_preprocessor import PicturePreprocessor
 from training.models import AutoSklearnTraining, AutoKerasTraining, TpotTraining, ErrorLog, AutoMlTraining
-
-from automl_systems.auto_sklearn.run import train as train_auto_sklearn
-from automl_systems.auto_keras.run import train as train_auto_keras
-from automl_systems.tpot.run import train as train_tpot
-
 
 def start_experiment(runtime_seconds, experiment_id):
 	error_log, created = ErrorLog.objects.get_or_create(name='Experiment log' + str(experiment_id))
@@ -95,7 +89,7 @@ def start_experiment(runtime_seconds, experiment_id):
 			training_triggered=True
 		)
 
-		train_auto_sklearn(str(ask_config_1h_mc_audio.id))
+		ask_config_1h_mc_audio.train()
 		print('Training 1 success!')
 		error_log.model_ids.append(ask_config_1h_mc_audio.id)
 		error_log.step += 1
@@ -114,7 +108,7 @@ def start_experiment(runtime_seconds, experiment_id):
 			freeze_results=True,
 			training_triggered=True
 		)
-		train_auto_sklearn(str(ask_config_1h_bc_audio.id))
+		ask_config_1h_bc_audio.train()
 		print('Training 2 success!')
 		error_log.model_ids.append(ask_config_1h_bc_audio.id)
 		error_log.step += 1
@@ -133,7 +127,7 @@ def start_experiment(runtime_seconds, experiment_id):
 			freeze_results=True,
 			training_triggered=True
 		)
-		train_auto_sklearn(str(ask_config_1h_mc_png.id))
+		ask_config_1h_mc_png.train()
 		print('Training 3 success!')
 		error_log.model_ids.append(ask_config_1h_mc_png.id)
 		error_log.step += 1
@@ -152,7 +146,7 @@ def start_experiment(runtime_seconds, experiment_id):
 			freeze_results=True,
 			training_triggered=True
 		)
-		train_auto_sklearn(str(ask_config_1h_bc_png.id))
+		ask_config_1h_bc_png.train()
 		print('Training 4 success!')
 		error_log.model_ids.append(ask_config_1h_bc_png.id)
 		error_log.step += 1
@@ -173,7 +167,7 @@ def start_experiment(runtime_seconds, experiment_id):
 			freeze_results=True,
 			training_triggered=True
 		)
-		train_auto_keras(str(ak_config_1h_mc_audio.id))
+		ak_config_1h_mc_audio.train()
 		print('Training 5 success!')
 		error_log.step += 1
 		error_log.save()
@@ -189,7 +183,7 @@ def start_experiment(runtime_seconds, experiment_id):
 			freeze_results=True,
 			training_triggered=True
 		)
-		train_auto_keras(str(ak_config_1h_bc_audio.id))
+		ak_config_1h_bc_audio.train()
 		print('Training 6 success!')
 		error_log.model_ids.append(ak_config_1h_bc_audio.id)
 		error_log.step += 1
@@ -206,7 +200,7 @@ def start_experiment(runtime_seconds, experiment_id):
 			freeze_results=True,
 			training_triggered=True
 		)
-		train_auto_keras(str(ak_config_1h_mc_png.id))
+		ak_config_1h_mc_png.train()
 		print('Training 7 success!')
 		error_log.model_ids.append(ak_config_1h_mc_png.id)
 		error_log.step += 1
@@ -223,7 +217,7 @@ def start_experiment(runtime_seconds, experiment_id):
 			freeze_results=True,
 			training_triggered=True
 		)
-		train_auto_keras(str(ak_config_1h_bc_png.id))
+		ak_config_1h_bc_png.train()
 		print('Training 8 success!')
 		error_log.model_ids.append(ak_config_1h_bc_png.id)
 		error_log.step += 1
@@ -250,7 +244,7 @@ def start_experiment(runtime_seconds, experiment_id):
 			training_triggered=True,
 			cv=2
 		)
-		train_tpot(str(tpot_training_1h_mc_audio.id))
+		tpot_training_1h_mc_audio.train()
 		print('Training 9 success!')
 		error_log.model_ids.append(tpot_training_1h_mc_audio.id)
 		error_log.step += 1
@@ -272,7 +266,7 @@ def start_experiment(runtime_seconds, experiment_id):
 			training_triggered=True,
 			cv=2
 		)
-		train_tpot(str(tpot_training_1h_bc_audio.id))
+		tpot_training_1h_bc_audio.train()
 		print('Training 10 success!')
 		error_log.model_ids.append(tpot_training_1h_bc_audio.id)
 		error_log.step += 1
@@ -294,7 +288,7 @@ def start_experiment(runtime_seconds, experiment_id):
 			training_triggered=True,
 			cv=2
 		)
-		train_tpot(str(tpot_training_1h_mc_png.id))
+		tpot_training_1h_mc_png.train()
 		print('Training 11 success!')
 		error_log.model_ids.append(tpot_training_1h_mc_png.id)
 		error_log.step += 1
@@ -316,7 +310,7 @@ def start_experiment(runtime_seconds, experiment_id):
 			training_triggered=True,
 			cv=2
 		)
-		train_tpot(str(tpot_training_1h_bc_png.id))
+		tpot_training_1h_bc_png.train()
 		print('Training 12 success!')
 		error_log.model_ids.append(tpot_training_1h_bc_png.id)
 		error_log.step += 1
@@ -327,22 +321,22 @@ def start_experiment(runtime_seconds, experiment_id):
 
 		training_config = AutoMlTraining.objects.get(id=training_config_id)
 		if training_config.model_path:
-			ac = ValidationResult.objects.create(
+			ac = Validator.objects.create(
 				model=training_config,
 				scoring_strategy='accuracy'
 			)
-			predict(ac)
+			ac.predict()
 			if training_config.task_type=='binary_classification':
-				pr = ValidationResult.objects.create(
+				pr = Validator.objects.create(
 					model=training_config,
 					scoring_strategy='precission'
 				)
-				predict(pr)
-				ra = ValidationResult.objects.create(
+				pr.predict()
+				ra = Validator.objects.create(
 					model=training_config,
 					scoring_strategy='roc_auc'
 				)
-				predict(ra)
+				ra.predict()
 		# TODO trigger calc of valr.
 		error_log.model_ids.remove(training_config_id)
 		error_log.save()

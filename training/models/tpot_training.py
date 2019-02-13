@@ -1,6 +1,15 @@
-from django.db import models
+import datetime
+import os
+import time
 
+import numpy
+from django.db import models
+from tpot import TPOTClassifier
+
+from automl_server.settings import AUTO_ML_MODELS_PATH, AUTO_ML_DATA_PATH
+from shared import reformat_data
 from training.models.auto_ml_training import AutoMlTraining
+import six.moves.cPickle as pickle
 
 
 class TpotTraining(AutoMlTraining):
@@ -101,3 +110,64 @@ class TpotTraining(AutoMlTraining):
     early_stop = models.IntegerField(default=None, null=True, blank=True, help_text='How many generations TPOT checks whether there is no improvement in optimization process. Ends the optimization process if there is no improvement in the given number of generations.')
     verbosity = models.IntegerField(default=0, null=True, blank=True, choices=VERBOSITY_CHOICES, help_text="How much information TPOT communicates while it's running. \nPossible inputs are:\n0, TPOT will print nothing,\n1, TPOT will print minimal information,\n2, TPOT will print more information and provide a progress bar, or\n3, TPOT will print everything and provide a progress bar.")
     disable_update_check = models.NullBooleanField(default=False, null=True, blank=True, help_text='Flag indicating whether the TPOT version checker should be disabled. The update checker will tell you when a new version of TPOT has been released.')
+
+    def train(self):
+        try:
+            # Storing save location for models
+            dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'tpot_' + str(datetime.datetime.now()) + '.dump')
+
+            x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, self.training_data_filename))
+            y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, self.training_labels_filename))
+
+            if self.preprocessing_object.input_data_type == 'png':
+                x = reformat_data(x)
+
+            # training the models
+            print('about to train')
+            model = TPOTClassifier(
+                # verbosity=2, max_time_mins=90, max_eval_time_mins=5, config_dict='TPOT light', population_size=4, generations=3, n_jobs=1)
+                generations=self.generations,
+                population_size=self.population_size,
+                offspring_size=self.offspring_size,
+                mutation_rate=self.mutation_rate,
+                crossover_rate=self.crossover_rate,
+                scoring=self.scoring,
+                cv=self.cv,
+                subsample=self.subsample,
+                n_jobs=self.n_jobs,
+                max_time_mins=self.max_time_mins,
+                # Tpot takes input in mins while most other frameworks take inputs in seconds.
+                max_eval_time_mins=self.max_eval_time_mins,
+                random_state=self.random_state,
+                config_dict=self.config_dict,
+                warm_start=self.warm_start,
+                memory=self.memory,
+                use_dask=self.use_dask,
+                early_stop=self.early_stop,
+                verbosity=self.verbosity,
+                disable_update_check=self.disable_update_check
+            )
+            print('before training start')
+            start = time.time()
+            model.fit(x, y)
+            end = time.time()
+            print('training finnished')
+
+            with open(dump_file, 'wb') as f:
+                print('about to save!')
+                pickle.dump(model.fitted_pipeline_, f)
+                print('model saved')
+
+            self.training_time = round(end - start, 2)
+            self.model_path = dump_file
+            self.status = 'success'
+            self.save()
+
+        except Exception as e:
+            end = time.time()
+            if 'start' in locals():
+                self.training_time = round(end - start, 2)
+
+            self.status = 'fail'
+            self.additional_remarks = e
+            self.save()

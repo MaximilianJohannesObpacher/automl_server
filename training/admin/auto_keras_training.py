@@ -4,7 +4,6 @@ from django.shortcuts import redirect
 
 from training.models import AutoSklearnTraining
 
-from automl_systems.auto_keras.run import train as train_auto_keras
 from training.models.auto_keras_training import AutoKerasTraining
 
 
@@ -68,7 +67,7 @@ class AutoKerasTrainingAdmin(admin.ModelAdmin):
             obj.training_triggered = True
             obj.status = 'waiting'
             obj.save()
-            train_auto_keras(str(obj.id))
+            obj.train()
 
     def response_add(self, request, obj, post_url_continue=None):
         return redirect('/admin/training/autokerastraining/' + str(obj.id) + '/change/')

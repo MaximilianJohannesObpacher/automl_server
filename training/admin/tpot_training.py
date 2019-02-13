@@ -3,7 +3,6 @@ from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 
-from automl_systems.tpot.run import train
 from training.models import TpotTraining
 
 
@@ -78,7 +77,7 @@ class TpotTrainingAdmin(admin.ModelAdmin):
             obj.training_triggered = True
             obj.status = 'waiting'
             obj.save()
-            train(str(obj.id))
+            obj.train()
 
 
     def response_add(self, request, obj, post_url_continue=None):

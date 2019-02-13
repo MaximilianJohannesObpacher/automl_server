@@ -1,7 +1,6 @@
 from django.core.management import BaseCommand
 
-from automl_systems.predict import predict
-from evaluation.models.validation_result import ValidationResult
+from evaluation.models.validation_result import Validator
 from training.models import AutoMlTraining
 
 class Command(BaseCommand):
@@ -17,9 +16,9 @@ def evaluate_all_models_accuracy():
 	for ac in AutoMlTraining.objects.all():
 		print(i)
 		if ac.model_path:
-			vr = ValidationResult.objects.create(
+			vr = Validator.objects.create(
 				model=ac,
 				scoring_strategy='accuracy'
 			)
-			predict(vr)
+			vr.predict()
 		i+=1

@@ -3,8 +3,6 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 
-# from automl_server.automl_systems.autosklearn.run import train, add
-# from automl_server.automl_systems.tpot.run import train as train_tpot
 from preprocessing.models.audio_preprocessor import FilePreprocessor
 
 
