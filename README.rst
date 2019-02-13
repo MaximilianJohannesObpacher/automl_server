@@ -1,4 +1,4 @@
-training_server
+training
 ===============
 
 Prerequisites: Docker, Docker-compose

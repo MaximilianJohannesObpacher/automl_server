@@ -1,1 +1,0 @@
-default_app_config = 'training_server.apps.TrainingServerConfig'

@@ -4,7 +4,7 @@ from preprocessing.models.audio_preprocessor import AudioPreprocessor
 
 # Preprocess audio files
 from preprocessing.models.picture_preprocessor import PicturePreprocessor
-from training_server.models import AutoSklearnConfig, AutoKerasConfig, TpotConfig, ErrorLog, AlgorithmConfig
+from training.models import AutoSklearnTraining, AutoKerasTraining, TpotTraining, ErrorLog, AutoMlTraining
 
 from automl_systems.auto_sklearn.run import train as train_auto_sklearn
 from automl_systems.auto_keras.run import train as train_auto_keras
@@ -82,7 +82,7 @@ def start_experiment(runtime_seconds, experiment_id):
 	memory_limit = 8192
 
 	if error_log.step < 3:
-		ask_config_1h_mc_audio = AutoSklearnConfig.objects.create(
+		ask_config_1h_mc_audio = AutoSklearnTraining.objects.create(
 			run_time=runtime_seconds,
 			per_instance_runtime=int(runtime_seconds/10),
 			memory_limit=memory_limit,
@@ -102,7 +102,7 @@ def start_experiment(runtime_seconds, experiment_id):
 		error_log.save()
 
 	if error_log.step < 4:
-		ask_config_1h_bc_audio = AutoSklearnConfig.objects.create(
+		ask_config_1h_bc_audio = AutoSklearnTraining.objects.create(
 			run_time=runtime_seconds,
 			memory_limit=memory_limit,
 			per_instance_runtime=int(runtime_seconds / 10),
@@ -121,7 +121,7 @@ def start_experiment(runtime_seconds, experiment_id):
 		error_log.save()
 
 	if error_log.step < 5:
-		ask_config_1h_mc_png = AutoSklearnConfig.objects.create(
+		ask_config_1h_mc_png = AutoSklearnTraining.objects.create(
 			run_time=runtime_seconds,
 			memory_limit=memory_limit,
 			per_instance_runtime=int(runtime_seconds / 10),
@@ -140,7 +140,7 @@ def start_experiment(runtime_seconds, experiment_id):
 		error_log.save()
 
 	if error_log.step < 6:
-		ask_config_1h_bc_png = AutoSklearnConfig.objects.create(
+		ask_config_1h_bc_png = AutoSklearnTraining.objects.create(
 			run_time=runtime_seconds,
 			memory_limit=memory_limit,
 			per_instance_runtime=int(runtime_seconds / 10),
@@ -163,7 +163,7 @@ def start_experiment(runtime_seconds, experiment_id):
 	# ===================================================
 
 	if error_log.step < 7:
-		ak_config_1h_mc_audio = AutoKerasConfig.objects.create(
+		ak_config_1h_mc_audio = AutoKerasTraining.objects.create(
 			time_limit=runtime_seconds,
 			training_name='Auto Keras ' + str(runtime_seconds) + ' seconds multiclass classification with audio input',
 			preprocessing_object=audio_files_preprocessed,
@@ -179,7 +179,7 @@ def start_experiment(runtime_seconds, experiment_id):
 		error_log.save()
 
 	if error_log.step < 8:
-		ak_config_1h_bc_audio = AutoKerasConfig.objects.create(
+		ak_config_1h_bc_audio = AutoKerasTraining.objects.create(
 			time_limit=runtime_seconds,
 			training_name='Auto Keras ' + str(runtime_seconds) + ' seconds multiclass classification with audio input',
 			preprocessing_object=audio_files_preprocessed,
@@ -196,7 +196,7 @@ def start_experiment(runtime_seconds, experiment_id):
 		error_log.save()
 
 	if error_log.step < 9:
-		ak_config_1h_mc_png = AutoKerasConfig.objects.create(
+		ak_config_1h_mc_png = AutoKerasTraining.objects.create(
 			time_limit=runtime_seconds,
 			training_name='Auto Keras ' + str(runtime_seconds) + ' seconds multiclass classification with picture input',
 			preprocessing_object=pictures_preprocessed,
@@ -213,7 +213,7 @@ def start_experiment(runtime_seconds, experiment_id):
 		error_log.save()
 
 	if error_log.step < 10:
-		ak_config_1h_bc_png = AutoKerasConfig.objects.create(
+		ak_config_1h_bc_png = AutoKerasTraining.objects.create(
 			time_limit=runtime_seconds,
 			training_name='Auto Keras ' + str(runtime_seconds) + ' seconds multiclass classification with picture input',
 			preprocessing_object=pictures_preprocessed,
@@ -234,7 +234,7 @@ def start_experiment(runtime_seconds, experiment_id):
 	# ===================================================
 
 	if error_log.step < 11:
-		tpot_config_1h_mc_audio = TpotConfig.objects.create(
+		tpot_training_1h_mc_audio = TpotTraining.objects.create(
 			verbosity=2,
 			max_time_mins=int(runtime_seconds / 60),
 			max_eval_time_mins=int(runtime_seconds/60/5),
@@ -250,14 +250,14 @@ def start_experiment(runtime_seconds, experiment_id):
 			training_triggered=True,
 			cv=2
 		)
-		train_tpot(str(tpot_config_1h_mc_audio.id))
+		train_tpot(str(tpot_training_1h_mc_audio.id))
 		print('Training 9 success!')
-		error_log.model_ids.append(tpot_config_1h_mc_audio.id)
+		error_log.model_ids.append(tpot_training_1h_mc_audio.id)
 		error_log.step += 1
 		error_log.save()
 
 	if error_log.step < 12:
-		tpot_config_1h_bc_audio = TpotConfig.objects.create(
+		tpot_training_1h_bc_audio = TpotTraining.objects.create(
 			verbosity=2,
 			max_time_mins=int(runtime_seconds / 60),
 			max_eval_time_mins=int(runtime_seconds/60/5),
@@ -272,14 +272,14 @@ def start_experiment(runtime_seconds, experiment_id):
 			training_triggered=True,
 			cv=2
 		)
-		train_tpot(str(tpot_config_1h_bc_audio.id))
+		train_tpot(str(tpot_training_1h_bc_audio.id))
 		print('Training 10 success!')
-		error_log.model_ids.append(tpot_config_1h_bc_audio.id)
+		error_log.model_ids.append(tpot_training_1h_bc_audio.id)
 		error_log.step += 1
 		error_log.save()
 
 	if error_log.step < 13:
-		tpot_config_1h_mc_png = TpotConfig.objects.create(
+		tpot_training_1h_mc_png = TpotTraining.objects.create(
 			verbosity=2,
 			max_time_mins=int(runtime_seconds / 60),
 			max_eval_time_mins=int(runtime_seconds/60/5),
@@ -294,14 +294,14 @@ def start_experiment(runtime_seconds, experiment_id):
 			training_triggered=True,
 			cv=2
 		)
-		train_tpot(str(tpot_config_1h_mc_png.id))
+		train_tpot(str(tpot_training_1h_mc_png.id))
 		print('Training 11 success!')
-		error_log.model_ids.append(tpot_config_1h_mc_png.id)
+		error_log.model_ids.append(tpot_training_1h_mc_png.id)
 		error_log.step += 1
 		error_log.save()
 
 	if error_log.step < 14:
-		tpot_config_1h_bc_png = TpotConfig.objects.create(
+		tpot_training_1h_bc_png = TpotTraining.objects.create(
 			verbosity=2,
 			max_time_mins=int(runtime_seconds / 60),
 			max_eval_time_mins=int(runtime_seconds/60/5),
@@ -316,16 +316,16 @@ def start_experiment(runtime_seconds, experiment_id):
 			training_triggered=True,
 			cv=2
 		)
-		train_tpot(str(tpot_config_1h_bc_png.id))
+		train_tpot(str(tpot_training_1h_bc_png.id))
 		print('Training 12 success!')
-		error_log.model_ids.append(tpot_config_1h_bc_png.id)
+		error_log.model_ids.append(tpot_training_1h_bc_png.id)
 		error_log.step += 1
 		error_log.save()
 
 	for training_config_id in error_log.model_ids:
 		error_log.step = 1337
 
-		training_config = AlgorithmConfig.objects.get(id=training_config_id)
+		training_config = AutoMlTraining.objects.get(id=training_config_id)
 		if training_config.model_path:
 			ac = ValidationResult.objects.create(
 				model=training_config,

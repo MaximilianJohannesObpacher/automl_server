@@ -2,7 +2,7 @@ from django.core.management import BaseCommand
 
 from automl_systems.predict import predict
 from evaluation.models.validation_result import ValidationResult
-from training_server.models import AlgorithmConfig
+from training.models import AutoMlTraining
 
 class Command(BaseCommand):
 	help = 'Starts an evaluation!'
@@ -14,7 +14,7 @@ class Command(BaseCommand):
 
 def evaluate_all_models_accuracy():
 	i=1
-	for ac in AlgorithmConfig.objects.all():
+	for ac in AutoMlTraining.objects.all():
 		print(i)
 		if ac.model_path:
 			vr = ValidationResult.objects.create(

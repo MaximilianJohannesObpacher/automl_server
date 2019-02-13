@@ -1,6 +1,6 @@
 from django.db import models
 
-from training_server.models import AlgorithmConfig
+from training.models import AutoMlTraining
 
 
 class ValidationResult(models.Model):
@@ -31,5 +31,5 @@ class ValidationResult(models.Model):
 	score = models.FloatField(max_length=10, blank=True, null=True)
 	additional_remarks = models.CharField(max_length=2048, blank=True, null=True)
 	status = models.CharField(max_length=32, choices=STATUS_CHOICES, blank=True, null=True)
-	model = models.ForeignKey(AlgorithmConfig, null=True, blank=True)
+	model = models.ForeignKey(AutoMlTraining, null=True, blank=True)
 
