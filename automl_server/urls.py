@@ -17,11 +17,22 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework import routers
 from training.urls import register_api as training_router
+from prediction.urls import register_api as predictor_router
+from preprocessing.urls import register_api as preprocessing_router
+from evaluation.urls import register_api as validator_router
+
 
 router = routers.DefaultRouter(trailing_slash=False)
 training_router(router)
+predictor_router(router)
+preprocessing_router(router)
+validator_router(router)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include(router.urls))
 ]
+
+admin.site.site_header = 'Auto-ML Server'
+admin.site.index_title = 'Define your workflow below:'
+

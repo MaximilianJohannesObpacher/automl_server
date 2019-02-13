@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from evaluation.management.evaluate_accuracy import evaluate_all_models_accuracy
-from evaluation.models.validation_result import Validator
+from evaluation.models.validator import Validator
 def evaluate_every_models_accuracy(modeladmin, request, queryset):
 	evaluate_all_models_accuracy()
 	evaluate_every_models_accuracy.short_description = "evaluate all accuracies!"

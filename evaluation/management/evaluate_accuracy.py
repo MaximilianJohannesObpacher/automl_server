@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 
-from evaluation.models.validation_result import Validator
+from evaluation.models.validator import Validator
 from training.models import AutoMlTraining
 
 class Command(BaseCommand):

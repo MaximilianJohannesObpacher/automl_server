@@ -1,4 +1,4 @@
-from evaluation.models.validation_result import Validator
+from evaluation.models.validator import Validator
 from experiment_administration.models.experiment_supervisor import ExperimentSupervisor
 from preprocessing.models.audio_preprocessor import AudioPreprocessor
 
