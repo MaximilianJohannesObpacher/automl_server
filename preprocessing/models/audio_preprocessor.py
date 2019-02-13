@@ -18,7 +18,7 @@ class AudioPreprocessor(FilePreprocessor):
 
 	output_data_format = models.CharField(max_length=256, blank=True, null=True, choices=FILE_FORMAT_CHOICES)
 
-	def audio_to_npy(self, filepath):
+	def save_audio_as_npy(self, filepath):
 		a = read(os.path.join(filepath))
 
 		if self.output_data_format == 'float':

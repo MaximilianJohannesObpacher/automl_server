@@ -75,13 +75,13 @@ class FilePreprocessor(models.Model):
 				print(is_audio)
 				for filepath in glob.iglob(AUTO_ML_DATA_PATH + self.input_folder_name + '**/*.wav',
 				                           recursive=True):
-					features, label = self.audio_to_npy(filepath)
+					features, label = self.save_audio_as_npy(filepath)
 					features_array.append(features)
 					labels_array.append(label)
 			# case image
 			else:
 				self.resize_images(self.output_image_dimens)
-				features_array, labels_array = self.generate_image_array()
+				features_array, labels_array = self.save_picture_as_npy()
 
 			print(len(features_array))
 			features_labels = list(zip(features_array, labels_array))

@@ -18,7 +18,7 @@ from preprocessing.models.file_preprocessor import FilePreprocessor
 class PicturePreprocessor(FilePreprocessor):
 	output_image_dimens = models.IntegerField(default=128)
 
-	def create_resized_copy_of_image(self, img, max_dimen, image_path):
+	def create_resized_image(self, img, max_dimen, image_path):
 		img = img.resize((max_dimen, max_dimen))
 
 		image_path_components = image_path.split('/')
@@ -43,9 +43,9 @@ class PicturePreprocessor(FilePreprocessor):
 		for filepath in glob.iglob(AUTO_ML_DATA_PATH + '/png/**/*.png', recursive=True):
 			img = Image.open(filepath)
 			image_path = img.filename
-			self.create_resized_copy_of_image(img, dimens, image_path)
+			self.create_resized_image(img, dimens, image_path)
 
-	def generate_image_array(self):
+	def save_picture_as_npy(self):
 		loaded_features = numpy.array(
 			[cv2.imread(fn) for fn in glob.iglob(AUTO_ML_DATA_PATH + '/png_resize/**/*.png', recursive=True)])
 		labels = [fn.split('/')[-2] for fn in glob.iglob(AUTO_ML_DATA_PATH + '/png_resize/**/*.png', recursive=True)]
