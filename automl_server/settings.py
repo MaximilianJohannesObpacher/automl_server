@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'training',
     'preprocessing',
     'evaluation',
+    'prediction',
+    'experiment_administration'
 ]
 
 MIDDLEWARE = [

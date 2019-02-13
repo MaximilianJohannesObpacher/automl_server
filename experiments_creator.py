@@ -1,12 +1,13 @@
 from evaluation.models.validation_result import Validator
+from experiment_administration.models.experiment_supervisor import ExperimentSupervisor
 from preprocessing.models.audio_preprocessor import AudioPreprocessor
 
 # Preprocess audio files
 from preprocessing.models.picture_preprocessor import PicturePreprocessor
-from training.models import AutoSklearnTraining, AutoKerasTraining, TpotTraining, ErrorLog, AutoMlTraining
+from training.models import AutoSklearnTraining, AutoKerasTraining, TpotTraining, AutoMlTraining
 
 def start_experiment(runtime_seconds, experiment_id):
-	error_log, created = ErrorLog.objects.get_or_create(name='Experiment log' + str(experiment_id))
+	error_log, created = ExperimentSupervisor.objects.get_or_create(name='Experiment log' + str(experiment_id))
 
 	print('in experiment')
 	if created:

@@ -2,4 +2,3 @@ from training.models.auto_sklearn_training import AutoSklearnTraining
 from training.models.auto_ml_training import AutoMlTraining
 from training.models.tpot_training import TpotTraining
 from training.models.auto_keras_training import AutoKerasTraining
-from training.models.error_log import ErrorLog
