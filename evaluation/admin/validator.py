@@ -2,9 +2,16 @@ from django.contrib import admin
 
 from evaluation.management.evaluate_accuracy import evaluate_all_models_accuracy
 from evaluation.models.validator import Validator
+from print_models import print_models
+
+
 def evaluate_every_models_accuracy(modeladmin, request, queryset):
 	evaluate_all_models_accuracy()
 	evaluate_every_models_accuracy.short_description = "evaluate all accuracies!"
+
+def print_all_models(modeladmin, request, queryset):
+	print_models()
+	print_all_models().short_description = "print_all_models!"
 
 class ValidatorAdmin(admin.ModelAdmin):
 	list_display = ('framework', 'model_short_characterisation', 'status', 'classification_task', 'scoring_strategy', 'score')
@@ -14,7 +21,7 @@ class ValidatorAdmin(admin.ModelAdmin):
 	)
 	readonly_fields = ('status', 'score', 'additional_remarks')
 	list_filter = ('status', 'scoring_strategy')
-	actions = [evaluate_every_models_accuracy]
+	actions = [evaluate_every_models_accuracy, print_all_models]
 
 	def framework(self, obj):
 		return obj.model.framework

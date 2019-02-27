@@ -96,6 +96,7 @@ AUTO_ML_MODELS_PATH = BASE_DIR + '/media/ml_models'
 SPECTOGRAMS_PATH = BASE_DIR + '/media/spectograms'
 RECORDINGS_PATH = BASE_DIR + '/media/recordings'
 RESULTS_PATH = BASE_DIR + '/media/results'
+AUTO_ML_DATA_PATH_EXP = BASE_DIR + '/media/ml_data/exp_models'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
