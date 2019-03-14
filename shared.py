@@ -9,8 +9,8 @@ from automl_server.settings import AUTO_ML_DATA_PATH, AUTO_ML_MODELS_PATH
 
 
 def load_ml_data(data_filename, labels_filename, one_hot_encoded, transform_to_binary):
-	x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, data_filename.replace(':', '_')))
-	y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, labels_filename.replace(':', '_')))
+	x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, data_filename))
+	y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, labels_filename))
 	print('loaded')
 
 	if one_hot_encoded:
@@ -19,7 +19,6 @@ def load_ml_data(data_filename, labels_filename, one_hot_encoded, transform_to_b
 	else:
 		print('x,y')
 		return x, y
-		# TODO how to handel for keras: return x, make_one_hot_encoding_binary(y) if transform_to_binary else make_one_hot_encoding_categorical(y)
 
 def save_ml_data(data_filename, labels_filename):
 	x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, data_filename))

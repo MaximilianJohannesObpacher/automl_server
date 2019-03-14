@@ -53,7 +53,7 @@ class FilePreprocessor(models.Model):
 	def __str__(self):
 		return str(self.input_folder_name) + '_' + str(self.training_features_path)
 
-	def make_categorical_binary(self, labels, true_name):
+	def label_multiclass_binary(self, labels, true_name):
 		bin_labels = []
 
 		for label in labels:
@@ -64,6 +64,55 @@ class FilePreprocessor(models.Model):
 
 		return bin_labels
 
+	def split_in_training_and_validation(self, features_labels):
+		#  shuffling
+		random.shuffle(features_labels)
+		features_array, labels_array = zip(*features_labels)
+
+		split_point = int(len(features_array) * 0.3)
+		validation_features = features_array[:split_point]
+		training_features = features_array[split_point:]
+		validation_labels = labels_array[:split_point]
+		training_labels = labels_array[split_point:]
+
+		return validation_features, training_features, validation_labels, training_labels
+
+	def save_as_numpy_arrays(self, validation_features, training_features, validation_labels, training_labels):
+		# saving as npy arrays
+		timestamp = str(datetime.datetime.now())
+
+		numpy.save(AUTO_ML_DATA_PATH + '/npy/training_features_' + str(timestamp) + '.npy',
+		           numpy.array(training_features))
+		numpy.save(AUTO_ML_DATA_PATH + '/npy/validation_features_' + str(timestamp) + '.npy',
+		           numpy.array(validation_features))
+
+		self.training_features_path = AUTO_ML_DATA_PATH + '/npy/training_features_' + str(
+			timestamp) + '.npy'
+		self.evaluation_features_path = AUTO_ML_DATA_PATH + '/npy/validation_features_' + str(
+			timestamp) + '.npy'
+
+		numpy.save(AUTO_ML_DATA_PATH + '/npy/training_labels_' + str(timestamp) + '.npy', training_labels)
+		numpy.save(AUTO_ML_DATA_PATH + '/npy/validation_labels_' + str(timestamp) + '.npy', validation_labels)
+
+		self.training_labels_path = AUTO_ML_DATA_PATH + '/npy/training_labels_' + str(
+			timestamp) + '.npy'
+		self.evaluation_labels_path = AUTO_ML_DATA_PATH + '/npy/validation_labels_' + str(
+			timestamp) + '.npy'
+
+		# optional saving classification task as binary task as well.
+		if self.transform_categorical_to_binary:
+			training_labels_binary = self.label_multiclass_binary(training_labels, self.binary_true_name)
+			validation_labels_binary = self.label_multiclass_binary(validation_labels, self.binary_true_name)
+
+			numpy.save(AUTO_ML_DATA_PATH + '/npy/training_labels_bin_' + str(timestamp) + '.npy',
+			           training_labels_binary)
+			numpy.save(AUTO_ML_DATA_PATH + '/npy/validation_labels_bin_' + str(timestamp) + '.npy',
+			           validation_labels_binary)
+			self.training_labels_path_binary = AUTO_ML_DATA_PATH + '/npy/training_labels_bin_' + str(
+				timestamp) + '.npy'
+			self.evaluation_labels_path_binary = AUTO_ML_DATA_PATH + '/npy/validation_labels_bin_' + str(
+				timestamp) + '.npy'
+
 	def transform_media_files_to_npy(self, is_audio):
 		features_array = []
 		labels_array = []
@@ -72,7 +121,6 @@ class FilePreprocessor(models.Model):
 
 			# get all files and put them in a features and a labels array
 			if is_audio:
-				print(is_audio)
 				for filepath in glob.iglob(AUTO_ML_DATA_PATH + self.input_folder_name + '**/*.wav',
 				                           recursive=True):
 					features, label = self.save_audio_as_npy(filepath)
@@ -81,64 +129,13 @@ class FilePreprocessor(models.Model):
 			# case image
 			else:
 				self.resize_images(self.output_image_dimens)
-				features_array, labels_array = self.save_picture_as_npy()
+				features_array, labels_array = self.save_pictures_as_npy()
 
-			print(len(features_array))
-			features_labels = list(zip(features_array, labels_array))
+			validation_features, training_features, validation_labels, training_labels = self.split_in_training_and_validation(list(zip(features_array, labels_array)))
 
-			#  shuffling
-			random.shuffle(features_labels)
-			features_array, labels_array = zip(*features_labels)
-
-			print('Before:' + str(numpy.unique(labels_array, return_counts=True)))
-
-			split_point = int(len(features_array) * 0.3)
-			validation_features = features_array[:split_point]
-			training_features = features_array[split_point:]
-			validation_labels = labels_array[:split_point]
-			training_labels = labels_array[split_point:]
-
-			print('After: ' + str(numpy.unique(validation_labels, return_counts=True)) + ' other: ' + str(
-				numpy.unique(training_labels, return_counts=True)))
-
-			# saving as npy arrays
-			timestamp = str(datetime.datetime.now())
-
-			print('trying to save audio')
-			numpy.save(AUTO_ML_DATA_PATH + '/npy/training_features_' + str(timestamp) + '.npy',
-			           numpy.array(training_features))
-			numpy.save(AUTO_ML_DATA_PATH + '/npy/validation_features_' + str(timestamp) + '.npy',
-			           numpy.array(validation_features))
-
-			self.training_features_path = AUTO_ML_DATA_PATH + '/npy/training_features_' + str(
-				timestamp) + '.npy'
-			self.evaluation_features_path = AUTO_ML_DATA_PATH + '/npy/validation_features_' + str(
-				timestamp) + '.npy'
-
-			numpy.save(AUTO_ML_DATA_PATH + '/npy/training_labels_' + str(timestamp) + '.npy', training_labels)
-			numpy.save(AUTO_ML_DATA_PATH + '/npy/validation_labels_' + str(timestamp) + '.npy', validation_labels)
-
-			self.training_labels_path = AUTO_ML_DATA_PATH + '/npy/training_labels_' + str(
-				timestamp) + '.npy'
-			self.evaluation_labels_path = AUTO_ML_DATA_PATH + '/npy/validation_labels_' + str(
-				timestamp) + '.npy'
-
-			# optional saving classification task as binary task as well.
-			if self.transform_categorical_to_binary:
-				training_labels_binary = self.make_categorical_binary(training_labels, self.binary_true_name)
-				validation_labels_binary = self.make_categorical_binary(validation_labels, self.binary_true_name)
-
-				numpy.save(AUTO_ML_DATA_PATH + '/npy/training_labels_bin_' + str(timestamp) + '.npy',
-				           training_labels_binary)
-				numpy.save(AUTO_ML_DATA_PATH + '/npy/validation_labels_bin_' + str(timestamp) + '.npy',
-				           validation_labels_binary)
-				self.training_labels_path_binary = AUTO_ML_DATA_PATH + '/npy/training_labels_bin_' + str(
-					timestamp) + '.npy'
-				self.evaluation_labels_path_binary = AUTO_ML_DATA_PATH + '/npy/validation_labels_bin_' + str(
-					timestamp) + '.npy'
+			self.save_as_numpy_arrays(validation_features, training_features, validation_labels, training_labels)
 
 			self.status = 'success'
-			print(self.training_features_path)
 			self.save()
 			return self
 

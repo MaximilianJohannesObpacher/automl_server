@@ -7,3 +7,4 @@ from preprocessing.serializers.audio_preprocessor import AudioPreprocessorSerial
 class AudioPreprocessorViewSet(viewsets.ModelViewSet):
 	queryset = AudioPreprocessor.objects.all()
 	serializer_class = AudioPreprocessorSerializer
+

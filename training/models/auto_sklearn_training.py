@@ -259,10 +259,12 @@ class AutoSklearnTraining(AutoMlTraining):
 
             dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'auto_sklearn' + str(datetime.datetime.now()) + '.dump')
 
+            print(AUTO_ML_DATA_PATH + ' self ' + self.training_labels_filename)
             x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, self.training_data_filename))
             y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, self.training_labels_filename))
 
             if self.preprocessing_object.input_data_type == 'png':
+                print('in preforma')
                 x = reformat_data(x)
 
             model = autosklearn.classification.AutoSklearnClassifier(
@@ -295,9 +297,13 @@ class AutoSklearnTraining(AutoMlTraining):
             with open(dump_file, 'wb') as f:
                 pickle.dump(model, f)
 
+
+
             self.training_time = round(end - start, 2)
             self.status = 'success'
             self.model_path = dump_file
+            self.save()
+            self.additional_remarks = model.show_models()
             self.save()
             print('Status final ' + self.status)
 

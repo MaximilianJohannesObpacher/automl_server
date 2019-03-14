@@ -53,7 +53,7 @@ class AutoMlTraining(models.Model):
 	date_trained = models.DateTimeField(auto_now=True)
 	training_triggered = models.BooleanField(default=False,
 	                                         help_text='Helper Flag for defining which config should be updateable (which one has not yet been trained)')
-	additional_remarks = models.CharField(null=True, blank=True, max_length=2048,
+	additional_remarks = models.CharField(null=True, blank=True, max_length=100000,
 	                                      help_text='Additional Information about the training. E.g. Information about failed trainings are logged here in case a training fails!')
 	training_data_filename = models.CharField(default='merged_folds_training_x.npy', max_length=256, null=True, blank=True,
 	                                          help_text='Filename or path to the training data file originating from ml_data folder')

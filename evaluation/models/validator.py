@@ -44,17 +44,17 @@ class Validator(models.Model):
 	def predict(self):
 		try:
 			if self.model.framework == 'auto_sklearn' or self.model.framework == 'tpot':
-				with open(self.model.model_path.replace(':', '_'), 'rb') as f:
+				with open(self.model.model_path, 'rb') as f:
 					my_model = pickle.load(f)
 
-				x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, self.model.validation_data_filename.replace(':', '_')))
-				y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, self.model.validation_labels_filename.replace(':', '_')))
+				x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, self.model.validation_data_filename))
+				y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, self.model.validation_labels_filename))
 
 				if self.model.preprocessing_object.input_data_type == 'png':
 					x = reformat_data(x)
 
 			elif self.model.framework == 'auto_keras':
-				my_model = pickle_from_file(self.model.model_path.replace(':', '_'))
+				my_model = pickle_from_file(self.model.model_path)
 				x, y = load_ml_data(self.model.validation_data_filename, self.model.validation_labels_filename, False,
 				                    self.model.label_one_hot_encoding_binary)
 			else:

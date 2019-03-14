@@ -45,7 +45,7 @@ class PicturePreprocessor(FilePreprocessor):
 			image_path = img.filename
 			self.create_resized_image(img, dimens, image_path)
 
-	def save_picture_as_npy(self):
+	def save_pictures_as_npy(self):
 		loaded_features = numpy.array(
 			[cv2.imread(fn) for fn in glob.iglob(AUTO_ML_DATA_PATH + '/png_resize/**/*.png', recursive=True)])
 		labels = [fn.split('/')[-2] for fn in glob.iglob(AUTO_ML_DATA_PATH + '/png_resize/**/*.png', recursive=True)]

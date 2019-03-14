@@ -162,6 +162,8 @@ class TpotTraining(AutoMlTraining):
             self.model_path = dump_file
             self.status = 'success'
             self.save()
+            self.additional_remarks = str(model.fitted_pipeline_)
+            self.save()
 
         except Exception as e:
             end = time.time()

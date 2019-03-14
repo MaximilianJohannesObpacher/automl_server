@@ -49,5 +49,6 @@ class Predictor(models.Model):
 			my_model = pickle.load(f)
 
 		y_pred = my_model.predict(features)
+
 		self.result = y_pred[0]
 		self.save()
