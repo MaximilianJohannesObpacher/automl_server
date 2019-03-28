@@ -174,8 +174,7 @@ class Validator(models.Model):
 		plt.ylabel('True label')
 		plt.xlabel('Predicted label\naccuracy={:0.4f}; misclass={:0.4f}'.format(accuracy, misclass))
 		plt.show()
-		plt.savefig('plots/' + self.model.framework + '_' + (
-			self.model.preprocessing_object.input_data_type if self.model.preprocessing_object else '') + '_' + self.model.task_type + '_' + self.model.training_time + (
-			            '_normalized' if normalize == True else '') + '.jpg')
+		plt.savefig(os.path.join(AUTO_ML_DATA_PATH,('plots/' + self.model.framework + '_' + (self.model.preprocessing_object.input_data_type if self.model.preprocessing_object else '') + '_' + self.model.task_type + '_' + self.model.training_time + (
+			            '_normalized' if normalize == True else '') + '.jpg')))
 
 

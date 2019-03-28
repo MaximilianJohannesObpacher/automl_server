@@ -112,9 +112,10 @@ class TpotTraining(AutoMlTraining):
     disable_update_check = models.NullBooleanField(default=False, null=True, blank=True, help_text='Flag indicating whether the TPOT version checker should be disabled. The update checker will tell you when a new version of TPOT has been released.')
 
     def train(self):
+        print('in tpot training')
         try:
             # Storing save location for models
-            dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'tpot_' + str(datetime.datetime.now()) + '.dump')
+            dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'tpot_' + str(datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')) + '.dump')
 
             x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, self.training_data_filename))
             y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, self.training_labels_filename))

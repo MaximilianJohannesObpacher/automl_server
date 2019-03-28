@@ -29,7 +29,7 @@ def start_experiment(runtimes_seconds, experiment_id):
 
 		audio_preprocess_config = AudioPreprocessor.objects.create(
 			transform_categorical_to_binary=True,
-			binary_true_name='no_fat_behavior',
+			binary_true_name='pc',
 			input_folder_name='/wav/',
 			input_data_type='wav',
 			preprocessing_name='audio_preprocessing_experiment'
@@ -50,7 +50,7 @@ def start_experiment(runtimes_seconds, experiment_id):
 	if error_log.step < 2:
 		pictures_preprocess_config = PicturePreprocessor.objects.create(
 			transform_categorical_to_binary=True,
-			binary_true_name='no_fat_behavior',
+			binary_true_name='pc',
 			input_folder_name='/png/',
 			input_data_type='png',
 			preprocessing_name='picture_preprocessing_experiment'

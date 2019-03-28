@@ -15,13 +15,13 @@ class AutoKerasTraining(AutoMlTraining):
 	verbose = models.BooleanField(default=True)
 
 	def train(self):
-
+		print('in autokeras training')
 		self.status = 'in_progress'
 		self.save()
 		# Storing save location for models
 
 		try:
-			dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'auto_keras' + str(datetime.datetime.now()) + '.h5')
+			dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'auto_keras' + str(datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')) + '.h5')
 
 			x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, self.training_data_filename))
 			y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, self.training_labels_filename))

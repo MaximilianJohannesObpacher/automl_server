@@ -255,9 +255,11 @@ class AutoSklearnTraining(AutoMlTraining):
         self.save()
         # Storing save location for models
 
+        print('in autosklearn training')
+
         try:
 
-            dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'auto_sklearn' + str(datetime.datetime.now()) + '.dump')
+            dump_file = os.path.join(AUTO_ML_MODELS_PATH, 'auto_sklearn' + str(datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')) + '.dump')
 
             print(AUTO_ML_DATA_PATH + ' self ' + self.training_labels_filename)
             x = numpy.load(os.path.join(AUTO_ML_DATA_PATH, self.training_data_filename))

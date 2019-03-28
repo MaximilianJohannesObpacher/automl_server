@@ -7,5 +7,4 @@ class EvaluationConfig(AppConfig):
     # TODO comment this in to make the startup an experiment run.
     #def ready(self):
     #    from experiments_creator import start_experiment
-    #    start_experiment(runtime_seconds=900, experiment_id=1)
-    #     start_experiment(runtime_seconds=3600, experiment_id=12)
+    #    start_experiment(runtimes_seconds=["600", "3600", "14400"], experiment_id=1)
