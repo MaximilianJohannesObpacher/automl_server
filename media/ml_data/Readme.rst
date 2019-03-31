@@ -1,0 +1,1 @@
+This is the data directory, add your data in here and just enter the filename in the configuration interface to use them for training
