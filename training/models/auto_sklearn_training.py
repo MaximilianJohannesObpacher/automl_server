@@ -1,11 +1,12 @@
 import datetime
 import os
 import time
-
+from io import BytesIO
 
 import autosklearn.classification
 import numpy
 from django.contrib.postgres.fields import ArrayField
+from django.core.files.base import ContentFile
 from django.db import models
 
 from automl_server.settings import AUTO_ML_MODELS_PATH, AUTO_ML_DATA_PATH
@@ -299,15 +300,15 @@ class AutoSklearnTraining(AutoMlTraining):
             with open(dump_file, 'wb') as f:
                 pickle.dump(model, f)
 
-
-
             self.training_time = round(end - start, 2)
             self.status = 'success'
             self.model_path = dump_file
             self.save()
+
             self.additional_remarks = model.show_models()
             self.save()
             print('Status final ' + self.status)
+
 
         except Exception as e:
             end = time.time()

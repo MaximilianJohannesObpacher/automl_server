@@ -71,6 +71,7 @@ class AutoMlTraining(models.Model):
 	task_type = models.CharField(choices=TASK_CHOICES, blank=True, null=True, help_text='If undefined we automatically perform multiclass classification', max_length=32) # only relevant if load input from files
 	preprocessing_object = models.ForeignKey(FilePreprocessor, null=True, blank=True)
 	machine_id = models.CharField(max_length=256, null=True, blank=True)
+	model = models.FileField(upload_to='ml_models/', null=True, blank=True)
 
 	def __str__(self):
 		return str(self.model_path)
