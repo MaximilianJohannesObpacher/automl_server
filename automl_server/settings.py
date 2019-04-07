@@ -38,9 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'training_server',
+    'training',
     'preprocessing',
     'evaluation',
+    'prediction',
+    'experiment_administration'
 ]
 
 MIDDLEWARE = [
@@ -89,11 +91,15 @@ DATABASES = {
     }
 }
 
-AUTO_ML_DATA_PATH = BASE_DIR + '/automl_systems/ml_data'
-AUTO_ML_MODELS_PATH = BASE_DIR + '/automl_systems/ml_models'
-SPECTOGRAMS_PATH = BASE_DIR + '/automl_systems/spectograms'
-RECORDINGS_PATH = BASE_DIR + '/automl_systems/recordings'
-RESULTS_PATH = BASE_DIR + '/automl_systems/results'
+AUTO_ML_DATA_PATH = BASE_DIR + '/media/ml_data'
+AUTO_ML_MODELS_PATH = BASE_DIR + '/media/ml_models'
+SPECTOGRAMS_PATH = BASE_DIR + '/media/spectograms'
+RECORDINGS_PATH = BASE_DIR + '/media/recordings'
+RESULTS_PATH = BASE_DIR + '/media/results'
+AUTO_ML_DATA_PATH_EXP = BASE_DIR + '/media/ml_data/exp_models'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

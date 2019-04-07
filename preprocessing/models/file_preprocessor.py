@@ -1,4 +1,13 @@
+import datetime
+import glob
+import os
+import random
+
+import numpy
 from django.db import models
+from scipy.io.wavfile import read
+
+from automl_server.settings import AUTO_ML_DATA_PATH
 
 
 class FilePreprocessorManager(models.Manager):
@@ -43,3 +52,95 @@ class FilePreprocessor(models.Model):
 
 	def __str__(self):
 		return str(self.input_folder_name) + '_' + str(self.training_features_path)
+
+	def label_multiclass_binary(self, labels, true_name):
+		bin_labels = []
+
+		for label in labels:
+			if label == true_name:
+				bin_labels.append(1)
+			else:
+				bin_labels.append(0)
+
+		return bin_labels
+
+	def split_in_training_and_validation(self, features_labels):
+		#  shuffling
+		random.shuffle(features_labels)
+		features_array, labels_array = zip(*features_labels)
+
+		split_point = int(len(features_array) * 0.3)
+		validation_features = features_array[:split_point]
+		training_features = features_array[split_point:]
+		validation_labels = labels_array[:split_point]
+		training_labels = labels_array[split_point:]
+
+		return validation_features, training_features, validation_labels, training_labels
+
+	def save_as_numpy_arrays(self, validation_features, training_features, validation_labels, training_labels):
+		# saving as npy arrays
+		timestamp = str(datetime.datetime.now())
+
+		numpy.save(AUTO_ML_DATA_PATH + '/npy/training_features_' + str(timestamp) + '.npy',
+		           numpy.array(training_features))
+		numpy.save(AUTO_ML_DATA_PATH + '/npy/validation_features_' + str(timestamp) + '.npy',
+		           numpy.array(validation_features))
+
+		self.training_features_path = AUTO_ML_DATA_PATH + '/npy/training_features_' + str(
+			timestamp) + '.npy'
+		self.evaluation_features_path = AUTO_ML_DATA_PATH + '/npy/validation_features_' + str(
+			timestamp) + '.npy'
+
+		numpy.save(AUTO_ML_DATA_PATH + '/npy/training_labels_' + str(timestamp) + '.npy', training_labels)
+		numpy.save(AUTO_ML_DATA_PATH + '/npy/validation_labels_' + str(timestamp) + '.npy', validation_labels)
+
+		self.training_labels_path = AUTO_ML_DATA_PATH + '/npy/training_labels_' + str(
+			timestamp) + '.npy'
+		self.evaluation_labels_path = AUTO_ML_DATA_PATH + '/npy/validation_labels_' + str(
+			timestamp) + '.npy'
+
+		# optional saving classification task as binary task as well.
+		if self.transform_categorical_to_binary:
+			training_labels_binary = self.label_multiclass_binary(training_labels, self.binary_true_name)
+			validation_labels_binary = self.label_multiclass_binary(validation_labels, self.binary_true_name)
+
+			numpy.save(AUTO_ML_DATA_PATH + '/npy/training_labels_bin_' + str(timestamp) + '.npy',
+			           training_labels_binary)
+			numpy.save(AUTO_ML_DATA_PATH + '/npy/validation_labels_bin_' + str(timestamp) + '.npy',
+			           validation_labels_binary)
+			self.training_labels_path_binary = AUTO_ML_DATA_PATH + '/npy/training_labels_bin_' + str(
+				timestamp) + '.npy'
+			self.evaluation_labels_path_binary = AUTO_ML_DATA_PATH + '/npy/validation_labels_bin_' + str(
+				timestamp) + '.npy'
+
+	def transform_media_files_to_npy(self, is_audio):
+		features_array = []
+		labels_array = []
+
+		try:
+
+			# get all files and put them in a features and a labels array
+			if is_audio:
+				for filepath in glob.iglob(AUTO_ML_DATA_PATH + self.input_folder_name + '**/*.wav',
+				                           recursive=True):
+					features, label = self.save_audio_as_npy(filepath)
+					features_array.append(features)
+					labels_array.append(label)
+			# case image
+			else:
+				self.resize_images(self.output_image_dimens)
+				features_array, labels_array = self.save_pictures_as_npy()
+
+			validation_features, training_features, validation_labels, training_labels = self.split_in_training_and_validation(list(zip(features_array, labels_array)))
+
+			self.save_as_numpy_arrays(validation_features, training_features, validation_labels, training_labels)
+
+			self.status = 'success'
+			self.save()
+			return self
+
+		except Exception as e:
+			print(e)
+			self.additional_remarks = e
+			self.status = 'fail'
+			self.save()

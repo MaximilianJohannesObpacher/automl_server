@@ -97,6 +97,5 @@ fabric.properties
 # project specific
 #
 static/
-media/
 config.yaml
 secret.yaml

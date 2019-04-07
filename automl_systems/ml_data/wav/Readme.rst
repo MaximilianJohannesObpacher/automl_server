@@ -1,2 +1,0 @@
-Contains wav files which should be transformed to npy arrays. By default we expect the different classes in different folders. The folder names are then taken as labels.
-Shuffling is executed automatically.

@@ -1,1 +1,1 @@
-from evaluation.admin.validation_result import *
+from evaluation.admin.validator import *
