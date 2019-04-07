@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
 from evaluation.management.evaluate_accuracy import evaluate_all_models_accuracy
 from evaluation.models.validator import Validator
@@ -17,11 +18,18 @@ class ValidatorAdmin(admin.ModelAdmin):
 	list_display = ('framework', 'model_short_characterisation', 'status', 'classification_task', 'scoring_strategy', 'score')
 	fieldsets = (
 		('Settings:', {'fields': ('model', 'scoring_strategy')}),
-		('Results:', {'fields': ('status', 'score', 'additional_remarks',)})
+		('Results:', {'fields': ('status', 'score', 'additional_remarks', 'confusion_matrix', 'conf_matrix')})
 	)
-	readonly_fields = ('status', 'score', 'additional_remarks')
+	readonly_fields = ('status', 'score', 'additional_remarks', 'conf_matrix')
 	list_filter = ('status', 'scoring_strategy')
 	actions = [evaluate_every_models_accuracy, print_all_models]
+
+
+	def conf_matrix(self, obj):
+		return mark_safe('<img src="{url}", style="width:70%" />'.format(
+			url=obj.confusion_matrix.url,
+		)
+	)
 
 	def framework(self, obj):
 		return obj.model.framework

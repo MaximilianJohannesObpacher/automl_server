@@ -14,8 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
+from django.conf.urls.static import static
 from django.contrib import admin
 from rest_framework import routers
+
+from automl_server import settings
 from training.urls import register_api as training_router
 from prediction.urls import register_api as predictor_router
 from preprocessing.urls import register_api as preprocessing_router
@@ -32,6 +35,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include(router.urls))
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 admin.site.site_header = 'Auto-ML Server'
 admin.site.index_title = 'Define your workflow below:'

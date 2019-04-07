@@ -18,6 +18,7 @@ class Predictor(models.Model):
 	training = models.ForeignKey(AutoMlTraining, null=True, blank=True)
 	file = models.FileField(null=True, blank=True, upload_to='ml_data/prediction_files/')
 	result = models.CharField(null=True, blank=True, max_length=256)
+	machine_id = models.CharField(max_length=256, null=True, blank=True)
 
 	def predict(self):
 

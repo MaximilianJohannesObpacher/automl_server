@@ -49,6 +49,7 @@ class FilePreprocessor(models.Model):
 	input_folder_name = models.CharField(max_length=256, default='', blank=True, null=True)
 	input_data_type = models.CharField(blank=True, null=True, choices=datatype_choices, max_length=32)
 	preprocessing_name = models.CharField(max_length=255, null=True, blank=True)
+	machine_id = models.CharField(max_length=256, null=True, blank=True)
 
 	def __str__(self):
 		return str(self.input_folder_name) + '_' + str(self.training_features_path)

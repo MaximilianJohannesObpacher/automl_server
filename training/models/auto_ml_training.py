@@ -70,6 +70,7 @@ class AutoMlTraining(models.Model):
 	load_files_from = models.CharField(choices=LOADING_CHOICES, help_text='Decide wether you want to load your files from a filepath or a grab the output files of a preprocessing job you triggered before', max_length=32, default='filename')
 	task_type = models.CharField(choices=TASK_CHOICES, blank=True, null=True, help_text='If undefined we automatically perform multiclass classification', max_length=32) # only relevant if load input from files
 	preprocessing_object = models.ForeignKey(FilePreprocessor, null=True, blank=True)
+	machine_id = models.CharField(max_length=256, null=True, blank=True)
 
 	def __str__(self):
 		return str(self.model_path)

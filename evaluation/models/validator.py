@@ -1,12 +1,17 @@
 import os
 import pickle
+from io import BytesIO
+from urllib.request import urlopen
+
 import sklearn
 
 import numpy
 from autokeras.utils import pickle_from_file
+from django.core.files import File
 from django.db import models
 from sklearn.metrics import confusion_matrix
 
+from automl_server import settings
 from automl_server.settings import AUTO_ML_DATA_PATH
 from shared import reformat_data, load_ml_data
 from training.models import AutoMlTraining
@@ -40,6 +45,8 @@ class Validator(models.Model):
 	additional_remarks = models.CharField(max_length=2048, blank=True, null=True)
 	status = models.CharField(max_length=32, choices=STATUS_CHOICES, blank=True, null=True)
 	model = models.ForeignKey(AutoMlTraining, null=True, blank=True)
+	machine_id = models.CharField(max_length=256, null=True, blank=True)
+	confusion_matrix = models.ImageField(null=True, blank=True, upload_to='ml_data/plots/')
 
 	def predict(self):
 		try:
@@ -174,7 +181,14 @@ class Validator(models.Model):
 		plt.ylabel('True label')
 		plt.xlabel('Predicted label\naccuracy={:0.4f}; misclass={:0.4f}'.format(accuracy, misclass))
 		plt.show()
-		plt.savefig(os.path.join(AUTO_ML_DATA_PATH,('plots/' + self.model.framework + '_' + (self.model.preprocessing_object.input_data_type if self.model.preprocessing_object else '') + '_' + self.model.task_type + '_' + self.model.training_time + (
-			            '_normalized' if normalize == True else '') + '.jpg')))
+		img_path = os.path.join(AUTO_ML_DATA_PATH,('plots/' + self.model.framework + '_' + (self.model.preprocessing_object.input_data_type if self.model.preprocessing_object else '') + '_' + self.model.task_type + '_' + self.model.training_time + (
+			            '_normalized' if normalize == True else '') + '.jpg'))
+		plt.savefig(img_path)
+
+		print(settings.MEDIA_URL + img_path.replace('/code/media/', ''))
+		matrix = urlopen(settings.BASE_URL + settings.MEDIA_URL + img_path.replace('/code/media/', ''))
+		io = BytesIO(matrix.read())
+		self.confusion_matrix.save(self.model.framework + '_' + (self.model.preprocessing_object.input_data_type if self.model.preprocessing_object else '') + '_' + self.model.task_type + '_' + self.model.training_time + (
+			            '_normalized' if normalize == True else ''), File(io))
 
 
