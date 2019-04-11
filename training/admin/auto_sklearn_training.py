@@ -2,7 +2,9 @@ from django.contrib import admin
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
+from django.utils.safestring import mark_safe
 
+from automl_server import settings
 from training.models import AutoSklearnTraining
 
 class AutoSklearnTrainingAdmin(admin.ModelAdmin):
@@ -12,7 +14,7 @@ class AutoSklearnTrainingAdmin(admin.ModelAdmin):
     def get_fieldsets(self, request, obj=None):
         fieldsets = (
             ('General Info:', {'fields': (
-            'training_name', 'framework', 'status', 'date_trained', 'model_path', 'logging_config',
+            'training_name', 'framework', 'status', 'date_trained', 'model_link', 'logging_config',
             'additional_remarks', 'training_time')}),
             ('FileLoadingStrategy', {'fields': ('load_files_from',)}),
         )
@@ -41,7 +43,7 @@ class AutoSklearnTrainingAdmin(admin.ModelAdmin):
             return fieldsets
 
     def get_readonly_fields(self, request, obj=None):
-        readonly_fields = ['framework', 'status', 'model_path', 'date_trained', 'logging_config', 'additional_remarks', 'training_time']
+        readonly_fields = ['framework', 'status', 'model_path', 'date_trained', 'logging_config', 'additional_remarks', 'training_time', 'model_link']
         if obj:
             readonly_fields.append('load_files_from')
             if not 'framework' in readonly_fields:
@@ -50,6 +52,8 @@ class AutoSklearnTrainingAdmin(admin.ModelAdmin):
                 return [f.name for f in self.model._meta.fields]
         return readonly_fields
 
+    def model_link(self, obj):
+        return mark_safe('<a href="' + obj.model_path.replace('/code', settings.BASE_URL)+ '">'+ obj.model_path.replace('/code', settings.BASE_URL)+' </a>' )
 
     def save_model(self, request, obj, form, change):
         if obj.pk is None:

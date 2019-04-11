@@ -18,7 +18,7 @@ class ValidatorAdmin(admin.ModelAdmin):
 	list_display = ('framework', 'model_short_characterisation', 'status', 'classification_task', 'scoring_strategy', 'score')
 	fieldsets = (
 		('Settings:', {'fields': ('model', 'scoring_strategy')}),
-		('Results:', {'fields': ('status', 'score', 'additional_remarks', 'confusion_matrix', 'conf_matrix')})
+		('Results:', {'fields': ('status', 'score', 'additional_remarks', 'conf_matrix')})
 	)
 	readonly_fields = ('status', 'score', 'additional_remarks', 'conf_matrix')
 	list_filter = ('status', 'scoring_strategy')

@@ -1,7 +1,9 @@
 from django.contrib import admin
 from django.core.exceptions import ValidationError
 from django.shortcuts import redirect
+from django.utils.safestring import mark_safe
 
+from automl_server import settings
 from training.models import AutoSklearnTraining
 
 from training.models.auto_keras_training import AutoKerasTraining
@@ -14,7 +16,7 @@ class AutoKerasTrainingAdmin(admin.ModelAdmin):
     def get_fieldsets(self, request, obj=None):
         fieldsets = (
             ('General Info:', {'fields': (
-            'training_name', 'status', 'date_trained', 'model_path', 'additional_remarks', 'training_time', 'verbose',
+            'training_name', 'status', 'date_trained', 'model_link', 'additional_remarks', 'training_time', 'verbose',
             'additional_remarks', 'training_time')}),
             ('FileLoadingStrategy', {'fields': ('load_files_from',)}),
         )
@@ -36,7 +38,7 @@ class AutoKerasTrainingAdmin(admin.ModelAdmin):
             return fieldsets
 
     def get_readonly_fields(self, request, obj=None):
-        readonly_fields = ['status', 'model_path', 'date_trained', 'logging_config', 'additional_remarks', 'training_time']
+        readonly_fields = ['status', 'model_link', 'date_trained', 'logging_config', 'additional_remarks', 'training_time']
         if obj:
             if not 'framework' in readonly_fields:
                 readonly_fields.append('framework')
@@ -68,6 +70,9 @@ class AutoKerasTrainingAdmin(admin.ModelAdmin):
             obj.status = 'waiting'
             obj.save()
             obj.train()
+
+    def model_link(self, obj):
+        return mark_safe('<a href="' + obj.model_path.replace('/code', settings.BASE_URL)+ '">'+ obj.model_path.replace('/code', settings.BASE_URL)+' </a>' )
 
     def response_add(self, request, obj, post_url_continue=None):
         return redirect('/admin/training/autokerastraining/' + str(obj.id) + '/change/')

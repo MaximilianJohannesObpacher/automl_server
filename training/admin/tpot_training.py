@@ -2,12 +2,14 @@ from django.contrib import admin
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
+from django.utils.safestring import mark_safe
 
+from automl_server import settings
 from training.models import TpotTraining
 
 
 class TpotTrainingAdmin(admin.ModelAdmin):
-    list_display = ('status', 'date_trained', 'model_path', 'additional_remarks')
+    list_display = ('status', 'date_trained', 'model_link', 'additional_remarks')
     list_filter = ('status',)
 
     # TODO Maybe a mixin would be a elegant solution for this.
@@ -15,7 +17,7 @@ class TpotTrainingAdmin(admin.ModelAdmin):
     def get_fieldsets(self, request, obj=None):
         fieldsets = (
             ('General Info:', {'fields': (
-            'training_name', 'status', 'date_trained', 'model_path',
+            'training_name', 'status', 'date_trained', 'model_link',
             'additional_remarks', 'training_time')}),
             ('File Loading Strategy', {'fields': ('load_files_from',)}),
         )
@@ -44,7 +46,7 @@ class TpotTrainingAdmin(admin.ModelAdmin):
 
 
     def get_readonly_fields(self, request, obj=None):
-        readonly_fields = ['status', 'model_path', 'date_trained', 'additional_remarks', 'training_time']
+        readonly_fields = ['status', 'model_link', 'date_trained', 'additional_remarks', 'training_time']
         if obj:
             readonly_fields.append('load_files_from')
             if not 'framework' in readonly_fields:
@@ -53,6 +55,8 @@ class TpotTrainingAdmin(admin.ModelAdmin):
                 return [f.name for f in self.model._meta.fields]
         return readonly_fields
 
+    def model_link(self, obj):
+        return mark_safe('<a href="' + obj.model_path.replace('/code', settings.BASE_URL)+ '">'+ obj.model_path.replace('/code', settings.BASE_URL)+' </a>' )
 
     def save_model(self, request, obj, form, change):
         if obj.pk is None:
