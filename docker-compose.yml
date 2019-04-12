@@ -17,9 +17,3 @@ services:
     shm_size: '8gb'
     oom_kill_disable: true
     tty: true
-  nvsmi:
-    image: ubuntu:18.04
-    runtime: nvidia
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-    command: nvidia-smi
