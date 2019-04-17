@@ -124,7 +124,6 @@ class TpotTraining(AutoMlTraining):
                 x = reformat_data(x)
 
             # training the models
-            print('about to train')
             model = TPOTClassifier(
                 # verbosity=2, max_time_mins=90, max_eval_time_mins=5, config_dict='TPOT light', population_size=4, generations=3, n_jobs=1)
                 generations=self.generations,
@@ -148,7 +147,6 @@ class TpotTraining(AutoMlTraining):
                 verbosity=self.verbosity,
                 disable_update_check=self.disable_update_check
             )
-            print('before training start')
             start = time.time()
             model.fit(x, y)
             end = time.time()
