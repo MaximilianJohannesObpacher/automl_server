@@ -16,7 +16,7 @@ class AutoKerasTrainingAdmin(admin.ModelAdmin):
     def get_fieldsets(self, request, obj=None):
         fieldsets = (
             ('General Info:', {'fields': (
-            'training_name', 'status', 'date_trained', 'model_link', 'additional_remarks', 'training_time', 'verbose',
+            'training_name', 'status', 'machine_id', 'date_trained', 'model_link', 'additional_remarks', 'training_time', 'verbose',
             'additional_remarks', 'training_time')}),
             ('FileLoadingStrategy', {'fields': ('load_files_from',)}),
         )

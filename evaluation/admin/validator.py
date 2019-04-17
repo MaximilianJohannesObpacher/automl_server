@@ -17,7 +17,7 @@ def print_all_models(modeladmin, request, queryset):
 class ValidatorAdmin(admin.ModelAdmin):
 	list_display = ('framework', 'model_short_characterisation', 'status', 'classification_task', 'scoring_strategy', 'score')
 	fieldsets = (
-		('Settings:', {'fields': ('model', 'scoring_strategy')}),
+		('Settings:', {'fields': ('model', 'scoring_strategy', 'machine_id')}),
 		('Results:', {'fields': ('status', 'score', 'additional_remarks', 'conf_matrix')})
 	)
 	readonly_fields = ('status', 'score', 'additional_remarks', 'conf_matrix')

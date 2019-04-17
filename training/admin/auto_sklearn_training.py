@@ -14,7 +14,7 @@ class AutoSklearnTrainingAdmin(admin.ModelAdmin):
     def get_fieldsets(self, request, obj=None):
         fieldsets = (
             ('General Info:', {'fields': (
-            'training_name', 'framework', 'status', 'date_trained', 'model_link', 'logging_config',
+            'training_name', 'status', 'machine_id', 'date_trained', 'model_link', 'logging_config',
             'additional_remarks', 'training_time')}),
             ('FileLoadingStrategy', {'fields': ('load_files_from',)}),
         )

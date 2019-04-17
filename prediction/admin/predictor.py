@@ -13,7 +13,10 @@ class PredictorAdmin(admin.ModelAdmin):
 		obj.predict()
 
 	def filename(self, obj):
-		return obj.file.name.split('/')[1:][0]
+		try:
+			return obj.file.name.split('/')[1:][0]
+		except:
+			return None
 
 	filename.admin_order_field = 'filename'
 	filename.short_description = 'File Name'
