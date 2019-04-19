@@ -1,8 +1,11 @@
+import os
+
+import numpy
 from celery import Celery
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
-
+from automl_server.settings import AUTO_ML_DATA_PATH
 from preprocessing.models.audio_preprocessor import FilePreprocessor
 
 
@@ -91,3 +94,57 @@ class AutoMlTraining(models.Model):
 			else:
 				self.training_labels_filename = self.preprocessing_object.training_labels_path
 				self.validation_labels_filename = self.preprocessing_object.evaluation_labels_path
+
+	def config_algorithm(self, akt):
+		# load labels
+		y = numpy.load(os.path.join(AUTO_ML_DATA_PATH, akt.training_labels_filename))
+
+		# find out the amount of different classes
+		count_classes = len(numpy.unique(y))
+		print('Count classes: ' + str(count_classes))
+
+		if akt.framework == 'tpot':
+			akt.run_time = akt.max_time_mins
+		if akt.framework == 'auto_keras':
+			akt.run_time = akt.time_limit
+
+		akt.run_time = int(akt.run_time * count_classes - 1)
+
+		# get filesize
+		filesize = os.path.getsize(os.path.join(AUTO_ML_DATA_PATH, akt.training_data_filename))
+
+		# filesize divided by one gigabyte
+		akt.run_time = int(akt.run_time * filesize / 1000000000)
+
+		# get representation
+		representation = akt.preprocessing_object.input_data_type
+
+		if representation == 'wav':
+			akt.run_time = akt.run_time * 2
+
+		akt.per_instance_runtime = int(akt.run_time / 10)
+
+		if akt.framework == 'tpot':
+			print('in tpot')
+			akt.max_time_mins = akt.run_time * 2
+			akt.max_eval_time_mins = akt.per_instance_runtime * 2
+			akt.population_size = 4
+			akt.generations = 3
+
+		if akt.framework == 'auto-keras':
+			print('in akeras')
+			akt.time_limit = akt.run_time * 10
+		return akt
+
+
+	def save_labels(self, akt):
+		if akt.load_files_from == 'preprocessing_job':
+			akt.training_data_filename = akt.preprocessing_object.training_features_path
+			akt.validation_data_filename = akt.preprocessing_object.evaluation_features_path
+			if akt.task_type == 'binary_classification':
+				akt.training_labels_filename = akt.preprocessing_object.training_labels_path_binary
+				akt.validation_labels_filename = akt.preprocessing_object.evaluation_labels_path_binary
+			else:
+				akt.training_labels_filename = akt.preprocessing_object.training_labels_path
+				akt.validation_labels_filename = akt.preprocessing_object.evaluation_labels_path
+		return akt

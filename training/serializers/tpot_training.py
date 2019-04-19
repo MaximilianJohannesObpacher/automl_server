@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
+from preprocessing.models.file_preprocessor import FilePreprocessor
 from training.models import TpotTraining
 
 
@@ -11,19 +12,23 @@ class TpotTrainingSerializer(serializers.ModelSerializer):
 
 	def create(self, validated_data):
 		akt = TpotTraining.objects.create(**validated_data)
-		if akt.load_files_from == 'preprocessing_job':
-			if not akt.preprocessing_object:
-				raise ValidationError('No preprocessing object selected!')
-			akt.training_data_filename = akt.preprocessing_object.training_features_path
-			akt.validation_data_filename = akt.preprocessing_object.evaluation_features_path
-			if akt.task_type == 'binary_classification':
-				akt.training_labels_filename = akt.preprocessing_object.training_labels_path_binary
-				akt.validation_labels_filename = akt.preprocessing_object.evaluation_labels_path_binary
-			else:
-				akt.training_labels_filename = akt.preprocessing_object.training_labels_path
-				akt.validation_labels_filename = akt.preprocessing_object.evaluation_labels_path
-		print(str(akt.training_data_filename) + str(akt.validation_data_filename) + str(
-			akt.training_labels_filename) + str(akt.validation_labels_filename))
+
+		# getting preprocessing file
+		machine_preprocessor = FilePreprocessor.objects.filter(machine_id=akt.machine_id).last()
+		if not machine_preprocessor:
+			raise ValidationError(
+				"either set input data paths or link to a machine number that has a preprocessing job!")
+
+		if akt.max_time_mins == None and akt.max_eval_time_mins == None:
+			akt = TpotTraining.objects.create(max_time_mins=60, max_eval_time_mins=5,
+			                                         load_files_from='preprocessing_job',
+			                                         preprocessing_object=machine_preprocessor,
+			                                         task_type='multiclass_classification', framework='tpot')
+			akt = akt.save_labels(akt)
+			akt = akt.config_algorithm(akt)
+		else:
+			akt = akt.save_labels(akt)
+
 		akt.training_triggered = True
 		akt.status = 'waiting'
 		akt.save()
