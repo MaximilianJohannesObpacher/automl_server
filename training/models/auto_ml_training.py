@@ -1,4 +1,5 @@
 import os
+from math import log
 
 import numpy
 from celery import Celery
@@ -108,7 +109,7 @@ class AutoMlTraining(models.Model):
 		if akt.framework == 'auto_keras':
 			akt.run_time = akt.time_limit
 
-		akt.run_time = int(akt.run_time * count_classes - 1)
+		akt.run_time = int(akt.run_time * (log(count_classes)*1.5) * (log(count_classes)*1.5))
 
 		# get filesize
 		filesize = os.path.getsize(os.path.join(AUTO_ML_DATA_PATH, akt.training_data_filename))
