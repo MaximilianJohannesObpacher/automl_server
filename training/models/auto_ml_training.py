@@ -91,3 +91,4 @@ class AutoMlTraining(models.Model):
 			else:
 				self.training_labels_filename = self.preprocessing_object.training_labels_path
 				self.validation_labels_filename = self.preprocessing_object.evaluation_labels_path
+				print('Is this the real life?')
